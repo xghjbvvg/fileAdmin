@@ -6,5 +6,5 @@
 ### 后端github地址：https://github.com/xghjbvvg/springboot-fileAdmin
 #### 文件搜索暂未开发，敬请期待
 #### 由于服务器限制，带宽限制，以下链接可能会反应比较慢
-##### 链接：http://120.78.88.169:81/mycloud/index.html#/
+
 
