@@ -1,6 +1,7 @@
 <template>
   <el-container>
     <el-header>
+      <UserLoginExpire/>
       <Header/>
     </el-header>
     <el-container>
@@ -187,20 +188,21 @@
 </template>
 
 <script>
+  import HelloWorld from './test/HelloWorld'
   import axios from 'axios'
-  import HelloWorld from './HelloWorld'
   import FileMd5 from '../models/file-md5.js'
   import plupload from 'plupload'
-  import BackPathItem from './BackPathItem'
+  import BackPathItem from './home/BackPathItem'
   import ElSlPanel from "element-ui/packages/color-picker/src/components/sv-panel";
-  import Aside from "./Aside";
-  import Header from "./Header";
-  import Download from "./Download";
-  import VuexDemo from './VuexDemo'
+  import Aside from "./home/Aside";
+  import Header from "./home/Header";
+  import Download from "./home/Download";
+  import VuexDemo from './test/VuexDemo'
+  import UserLoginExpire from'./user/UserLoginExpire'
 
   export default {
     name: "index",
-    components: {VuexDemo, Download, Header, Aside, ElSlPanel, HelloWorld, BackPathItem},
+    components: {UserLoginExpire,VuexDemo, Download, Header, Aside, ElSlPanel, HelloWorld, BackPathItem},
     data() {
       return {
         input: '',
@@ -631,7 +633,7 @@
 
       },
 
-      /*文件上传操作*/
+      /*文件上传操作,上传参数设置*/
       beforeUpload(up, file) {
         up.setOption("multipart_params", {"size": file.size, "md5": file.md5, "relativePath": this.uploadPath});
       },

@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import axios from 'axios'
 Vue.use(Vuex);
 
-const modulea = {
+/*const modulea = {
   namespaced:true,
   state:{
     num:1
@@ -68,37 +68,49 @@ const modulec = {
       return state.num++;
     }
   }
-}
+}*/
 const store = new Vuex.Store({
   state:{
     downloadList:[],
     percent:0,
-    num:1
+    userInfo:{},
+    previewFilePath:'',
   },
   getters:{
     getDownload(state){
       return state.downloadList;
-    }
+    },
+    getUserInfo(state){
+      return state.userInfo;
+    },
+    getPreviewFilePath(state){
+      return state.previewFilePath;
+    },
   },
   mutations:{
     getDownload(state,data){
        state.downloadList = data;
     },
-
     setDownload(state,data){
       state.downloadList = data;
-      // console.log(state.downloadList);
+    },
+
+    getPreviewFilePath(state,data){
+       state.previewFilePath  = data;
+    },
+    setPreviewFilePath(state,data){
+      state.previewFilePath  = data;
+    },
+
+    setUserInfo(state,data){
+     state.userInfo = data;
     }
   },
   actions:{
-    increment(context){
-     context.commit('increment')
-    }
+
   },
   modules:{
-    a:modulea,
-    b:moduleb,
-    c:modulec
+
   }
 });
 

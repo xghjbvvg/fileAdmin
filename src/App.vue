@@ -6,7 +6,6 @@
 
 <script>
   export default {
-
     /**
      * 初始化上传插件
      */
@@ -16,7 +15,9 @@
 
 <style scoped>
   #app{
-    width:1200px;
+    width:100%;
+
+    margin:0 0;
   }
 </style>
 

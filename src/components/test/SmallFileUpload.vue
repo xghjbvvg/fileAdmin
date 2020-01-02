@@ -53,9 +53,9 @@
 </template>
 
 <script>
-  import FileMd5 from '../models/file-md5.js'
+  import FileMd5 from '../../models/file-md5.js'
   import plupload from 'plupload'
-  import Upload from './Uploader'
+  import Upload from '../home/Uploader'
   import axios from 'axios'
   export default {
     name: "SmallFileUpload",

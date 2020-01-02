@@ -35,6 +35,8 @@
           </el-table-column>
         </el-table>
       </el-main>
+
+
   </div>
 </template>
 
@@ -42,14 +44,19 @@
   import {mapState, mapGetters} from 'vuex'
   import Vue from 'vue'
   import axios from 'axios'
+  import VueCookie from "vue-cookies";
 
   export default {
     name: "Download",
+    components: {
+      VueCookie
+    },
     data() {
       return {
         tableData: this.$store.state.downloadList,
         percent: 0,
-        activeClass:0
+        activeClass:0,
+        access_token:VueCookie.get("access_token"),
       }
     },
     computed: {
@@ -58,6 +65,27 @@
         num: state => state.num,
       }),
       ...mapGetters(['getDownload'])
+    },
+    directives:{
+      drag:function(el){
+        el.onmousedown = function(e){
+          //获取鼠标点击处分别与div左边和上边的距离：鼠标位置-div位置
+          var divx = e.clientX - document.getElementById('download').offsetLeft;
+          var divy = e.clientY - document.getElementById('download').offsetTop;
+          //包含在onmousedown里，表示点击后才移动，为防止鼠标移出div，使用document.onmousemove
+          document.onmousemove = function(e){
+            //获取移动后div的位置：鼠标位置-divx/divy
+            var l = e.clientX - divx;
+            var t = e.clientY - divy;
+            document.getElementById('download').style.left=l+'px';
+            document.getElementById('download').style.top=t+'px';
+          }
+          document.onmouseup = function(e){
+            document.onmousemove = null;
+            document.onmouseup = null;
+          }
+        }
+      }
     },
     watch: {
       display1:function (newVal, oldVal) {
@@ -70,9 +98,7 @@
         this.tableData = newVal;
       })
     },
-    computed: {
 
-    },
 
     methods: {
       changeDownloadStyle() {
@@ -87,11 +113,12 @@
       //下载实际操作
       download(path) {
         axios({
-          url: '/api/download',
+          url: '/api/file/download',
           method: 'get',
           responseType: 'blob',
           params: {
-            filePath: path
+            filePath: path,
+            access_token:this.access_token,
           }
         })
           .then((res) => {
@@ -122,20 +149,23 @@
             console.log(error);
           })
       },
+
+
       len() {
         alert(this.$store.state.downloadList.length);
       },
       interval(list, j) {
         this.percent = 0;
-        let path = this.$store.state.downloadList[j].parentPath + this.$store.state.downloadList[j].absolutePath;
+        let path = this.$store.state.downloadList[j].absolutePath;
         this.download(path);
         let interval = setInterval(() => {
           axios({
-            url: '/api/getDownloadPercent',
+            url: '/api/file/getDownloadPercent',
             method: 'get',
             async: false,
             params:{
-              filename:list[j].name
+              filename:list[j].name,
+              access_token:this.access_token,
             },
             header: {'content-type': 'application/json;charset=utf-8'}
           })
@@ -179,7 +209,7 @@
         if (list[i].download !== 1 && list[i].downloading !== 1) {
           this.activeClass = 1;
           list[i].downloading = 1;
-          alert(list[i].download+"  :   "+list[i].downloading);
+          // alert(list[i].download+"  :   "+list[i].downloading);
           this.interval(list, i);
         }
         this.$store.commit('setDownload', list)
@@ -191,8 +221,10 @@
 
 <style scoped>
   #download {
-    width: 500px;
+    width: 550px;
     height: 250px;
+    top: 200px;
+    right: 20px;
   }
 
   .el-header {
