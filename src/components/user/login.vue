@@ -36,7 +36,8 @@
         </el-form-item>
       </el-form>
 
-      <el-form v-show="flag" :model="userLogin" status-icon :rules="userRules" ref="userLogin" label-width="110px"
+      <el-form v-show="flag" :model="userLogin" status-icon :rules="userRules"
+               ref="userLogin" label-width="110px"
                class="demo-ruleForm">
         <el-form-item style="margin: 0">
           <p class="loginHead">用户名登入</p>

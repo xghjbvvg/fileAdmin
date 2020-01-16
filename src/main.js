@@ -10,6 +10,7 @@ import uploader from 'vue-simple-uploader'
 import plupload from 'plupload'
 import SlideVerify from 'vue-monoplasty-slide-verify';
 import VueCookie from 'vue-cookies'
+
 Vue.use(VueCookie);
 Vue.use(SlideVerify);
 Vue.use(plupload);

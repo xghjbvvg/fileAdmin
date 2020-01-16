@@ -302,7 +302,11 @@
 
                   })
                   .catch((error)=>{
-                    console.log(error);
+                    loading.close();
+                    this.$message({
+                      message: '亲，注册失败，请联系客服。。。',
+                      type: 'warning'
+                    });
                   })
               } else {
                 console.log('error submit!!');

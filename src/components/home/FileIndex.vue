@@ -75,7 +75,7 @@
                           @click="
                             toNext(
                               $event,
-                              scope.row.absolutePath,
+                              scope.row.path,
                             )
                           "
                         >
@@ -242,8 +242,10 @@
   import plupload from "plupload";
   import axios from "axios";
   import FileMd5 from "../../models/file-md5.js";
+  import SWF from "../../models/dfa.js";
   import VueCookie from "vue-cookies";
   import FileShower from "./FileShower";
+  var fs = require("fs");
 
 
 
@@ -320,6 +322,7 @@
         duplicates: false,
         //图片文件路径
         path:'',
+        filterWord:[]
       };
     },
     computed: {
@@ -655,7 +658,9 @@
             "content-type": "application/json;charset=utf-8"
           },
           params: {
-            path: this.uploadPath
+            path: this.uploadPath,
+            uid: this.user.id,
+            access_token: VueCookie.get("access_token")
           }
         })
           .then(msg => {
@@ -739,8 +744,6 @@
 
       /*文件上传操作,上传参数设置*/
       beforeUpload(up, file) {
-        console.log(this.user);
-
         up.setOption("multipart_params", {
           uid: this.user.id,
           size: file.size,
@@ -802,7 +805,6 @@
             });
             this.uploadStart();
           });
-
         });
         this.up = up;
 
@@ -824,12 +826,16 @@
       error(uploader, errObject) {
         //同一文件可以重复上传
         this.duplicates = true;
-        // alert(66);
         alert(errObject.message);
       },
       uploadStop() {
         this.uploading = false;
         this.up.stop();
+      },
+      fileUploaded(uploader,file,responseObject){
+          console.log(uploader);
+          console.log(file);
+          console.log(responseObject);
       },
       //初始化pluploader
       initPlUploader() {
@@ -847,7 +853,8 @@
             BeforeUpload: this.beforeUpload,
             /* UploadProgress: this.uploadProgress,
                FileUploaded: this.fileUploaded,*/
-            Error: this.error
+            Error: this.error,
+            FileUploaded:this.fileUploaded,
           }
         });
         this.plUploader.init();
@@ -858,12 +865,14 @@
         this.path = this.tableData[index].url;
         alert(this.path);
         this.showFile = true;
-      }
+      },
+
     },
     mounted: function() {
       //初始化文件上传
       this.initPlUploader();
       this.getFileMainMenu();
+
     }
   };
 </script>

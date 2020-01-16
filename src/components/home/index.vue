@@ -305,8 +305,9 @@ export default {
       })
         .then(msg => {
           //将上传路径
-          this.uploadPath = msg.data[0].parentPath;
-          // alert(this.uploadPath);
+          this.uploadPath = msg.data[0].absolutePath;
+          console.log(msg.data);
+          console.log(this.uploadPath);
           this.tableData = msg.data;
           this.addFiled(this.tableData);
         })

@@ -15,6 +15,11 @@
             动态圈
             <!--<router-link to="/">动态圈</router-link>-->
           </el-menu-item>
+          <el-menu-item index="4">
+            <router-link to="/more"> 更多</router-link>
+
+            <!--<router-link to="/">动态圈</router-link>-->
+          </el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="1" >

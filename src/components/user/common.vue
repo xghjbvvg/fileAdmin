@@ -147,8 +147,8 @@
 
   .el-header {
     color: floralwhite;
-    width: 1250px;
-    height: 100px !important;
+    width: 100%;
+    height: 5% !important;
     padding: 5px 30px;
     font: 23px/1.5 Tahoma, Helvetica, Arial, '宋体', sans-serif;
   }
@@ -161,8 +161,8 @@
   }
 
   .el-footer {
-    width: 1250px;
-    height: 100px !important;
+    width: 100%;
+    height: 5% !important;
     margin: 0 auto;
     align-items: center;
     text-align: center;
@@ -171,15 +171,15 @@
   .el-aside {
     color: #333;
     text-align: center;
-    width: 625px !important;
+    width: 45% !important;
     height: 500px;
   }
 
   .el-main {
     color: #333;
     text-align: center;
-    height: 500px;
-    width: 625px !important;
+    height: 90%;
+    width: 55% !important;
   }
 
 

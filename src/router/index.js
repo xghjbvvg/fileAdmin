@@ -15,7 +15,8 @@ import userCenterIndex from '@/components/userCenter/index'
 import passwordProtect from '@/components/userCenter/passwordProtect'
 import resetPassword from '@/components/userCenter/resetPassword'
 import fileIndex from '@/components/home/fileIndex'
-
+import moreIndex from '@/components/more/index'
+import time from '@/components/more/timeMemory/index'
 Vue.use(Router)
 
 const router = new Router({
@@ -37,6 +38,16 @@ const router = new Router({
 
           ]
         },
+        {
+          path:'/more',
+          name:'more',
+          component:moreIndex
+        },
+        {
+          path:'/more/time',
+          name:'time',
+          component:time
+        }
       ]
     },
 
