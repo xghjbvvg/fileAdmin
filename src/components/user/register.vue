@@ -281,7 +281,7 @@
                             console.log(res.data.access_token);
                             VueCookie.set("access_token",res.data.access_token,86400);
                             VueCookie.set("username",this.register.username,86400);
-                            router.push("/");
+                            router.push("/index");
                           }).catch((err)=>{
                             loading.close();
                             this.$message({

@@ -214,7 +214,7 @@
                     this.loginSuccess = true;
                     VueCookie.set("access_token",res.data.access_token,86500);
                     VueCookie.set("username",this.userLogin.username,86500);
-                    router.push("/");
+                    router.push("/index");
                   }).catch((err)=>{
                     loading.close();
                     this.$message({

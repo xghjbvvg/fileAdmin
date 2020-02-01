@@ -312,6 +312,7 @@
         //http://127.0.0.1:8081
         server_config: "/api/file/fileUpload",
         uploadPath: "",
+        rootPath:"",
         up: {},
         files: [],
         // tableData: [],
@@ -335,7 +336,7 @@
         handler() {
           // this.tableData = [];
           this.files.forEach(e => {
-            console.log(e);
+            //console.log(e);
             this.tableData.push({
               name: e.name,
               size: e.size,
@@ -369,7 +370,7 @@
       //跳转到下层路径
       toNext(event, path) {
         this.currentPath.push(path);
-        console.log(this.currentPath);
+        //console.log(this.currentPath);
         //重设上传路径
         this.uploadPath = path;
         //获得该路径下所有文件
@@ -379,6 +380,7 @@
       //根据索引删除文件
       deleteMenuFile(index) {
         var confirm = window.confirm("are you sure ?");
+        //console.log(this.tableData[index]);
         if (confirm) {
           // console.log(this.tableData[index]);
           axios({
@@ -386,7 +388,8 @@
             method: "post",
             params: {
               access_token: VueCookie.get("access_token"),
-              path: this.tableData[index].absolutePath,
+              id: this.tableData[index].id,
+              path: this.tableData[index].path,
               uid:this.user.id
             }
           })
@@ -458,7 +461,7 @@
           }
         })
           .then(res => {
-            console.log(res);
+           // console.log(res);
             //木有数据则返回
             if (!res) {
               return;
@@ -526,8 +529,8 @@
         })
           .then(msg => {
             //将上传路径
-            this.uploadPath = msg.data[0].parentPath;
-            // alert(this.uploadPath);
+            this.uploadPath = msg.data[0].absolutePath;
+            this.rootPath = msg.data[0].absolutePath;
             this.tableData = msg.data;
             this.addFiled(this.tableData);
           })
@@ -565,7 +568,7 @@
             console.log(error);
           });
       },
-
+      //根据文件路径获取文件
       pathSkip(path,index){
         this.currentPath.splice(index+1);
         this.uploadPath = path;
@@ -634,7 +637,13 @@
                     type: "success",
                     message: value + "文件夹创建成功 "
                   });
-                  this.getTableDataByPath(this.uploadPath);
+
+                  if(this.uploadPath == this.rootPath){
+                    this.getFileMainMenu();
+                  }else{
+                    this.getTableDataByPath(this.uploadPath);
+                  }
+
                 })
                 .catch(error => {
                   console.log(error);
@@ -679,13 +688,13 @@
           if (this.sizeFlag) {
             this.sort("/api/file/sortFileBySizeUp");
             this.sizeFlag = false;
-            console.log(this.tableData);
+            //console.log(this.tableData);
           } else {
             //日期排序
             //从大到小
             this.sort("/api/file/sortFileBySizeDown");
             this.sizeFlag = true;
-            console.log(this.tableData);
+            //console.log(this.tableData);
           }
         } else {
           //从早到晚
@@ -744,6 +753,7 @@
 
       /*文件上传操作,上传参数设置*/
       beforeUpload(up, file) {
+        //alert(this.uploadPath);
         up.setOption("multipart_params", {
           uid: this.user.id,
           size: file.size,
@@ -768,11 +778,13 @@
       },
 
       filesAdded: function(up, files) {
+
         console.log("有新文件添加至队列");
         this.flag = true;
-        files.forEach((f) => {
+        files.forEach((f,index) => {
           f.status = -1;
           FileMd5(f.getNative(), (e, md5) => {
+
             f["md5"] = md5;
             f.status = 1;
             f.relativePath = this.uploadPath;
@@ -788,25 +800,29 @@
             })
               .then(msg => {
                 this.fileIsExist = !msg.data;
+
                 if (this.fileIsExist) {
-                  alert("亲，文件已经上传过了。。。。");
+                  this.$message({
+                    message: '亲，'+f.name+'文件已经上传过了。。。。',
+                    type:  'warning'
+                  });
                   f.status = 5;
-                } else {
 
+                }else{
+                  files.forEach(f => {
+                    this.files.push(f);
 
+                  });
+                  this.uploadStart();
                 }
-
               })
               .catch(error => {
                 console.log(error);
               });
-            files.forEach(f => {
-              this.files.push(f);
-            });
-            this.uploadStart();
+
           });
+          this.up = up;
         });
-        this.up = up;
 
       },
       //删除上传文件
@@ -826,16 +842,15 @@
       error(uploader, errObject) {
         //同一文件可以重复上传
         this.duplicates = true;
-        alert(errObject.message);
+        console.log(errObject.message);
+        this.$message({
+          type:'warn',
+          message:'含有违法信息或服务器异常，请联系管理员'
+        })
       },
       uploadStop() {
         this.uploading = false;
         this.up.stop();
-      },
-      fileUploaded(uploader,file,responseObject){
-          console.log(uploader);
-          console.log(file);
-          console.log(responseObject);
       },
       //初始化pluploader
       initPlUploader() {
@@ -854,7 +869,8 @@
             /* UploadProgress: this.uploadProgress,
                FileUploaded: this.fileUploaded,*/
             Error: this.error,
-            FileUploaded:this.fileUploaded,
+            //FileUploaded:this.fileUploaded,
+            //ChunkUploaded:this.chunkUploaded
           }
         });
         this.plUploader.init();
@@ -863,7 +879,7 @@
       //文件预览，路径传递
       showFileMethod(index){
         this.path = this.tableData[index].url;
-        alert(this.path);
+        //alert(this.path);
         this.showFile = true;
       },
 
@@ -872,7 +888,6 @@
       //初始化文件上传
       this.initPlUploader();
       this.getFileMainMenu();
-
     }
   };
 </script>

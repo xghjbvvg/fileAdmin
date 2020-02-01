@@ -75,6 +75,10 @@ const store = new Vuex.Store({
     percent:0,
     userInfo:{},
     previewFilePath:'',
+    fileSharerFlag:false,
+    shareOrSave:true,//false:保存；true：分享
+    fileSharerSavePath:'',
+    fileItem:[],
   },
   getters:{
     getDownload(state){
@@ -86,6 +90,18 @@ const store = new Vuex.Store({
     getPreviewFilePath(state){
       return state.previewFilePath;
     },
+    getFileSharerFlag(state){
+      return state.fileSharerFlag;
+    },
+    getShareOrSave(state){
+      return state.shareOrSave;
+    },
+    getFileSharerSavePath(state){
+      return state.fileSharerSavePath;
+    },
+    getFileItem(state){
+      return state.fileItem;
+    }
   },
   mutations:{
     getDownload(state,data){
@@ -104,6 +120,18 @@ const store = new Vuex.Store({
 
     setUserInfo(state,data){
      state.userInfo = data;
+    },
+    setFileSharerFlag(state,data){
+      state.fileSharerFlag = data;
+    },
+    setShareOrSave(state,data){
+      state.shareOrSave = data;
+    },
+    setFileSharerSavePath(state,data){
+      state.fileSharerSavePath = data;
+    },
+    setFileItem(state,data){
+      state.fileItem = data;
     }
   },
   actions:{

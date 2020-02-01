@@ -2,33 +2,226 @@
   <el-container>
     <el-header>
       <el-row style="text-align: right;background: #F5F5F5;height: 70px;padding-top: 20px;">
-        <el-col :span="12">殇璃雪域</el-col>
+        <el-col :span="12">{{friend.username}}</el-col>
         <el-col :span="11">
           <el-button>文件库</el-button>
         </el-col>
       </el-row>
     </el-header>
     <el-main>
-      <div class="talk_con">
-        <div class="chatlist">
 
-          <div v-for="msg in messages">
+      <div style="text-align: right;">
 
-            <!--message:{{msg.message}}&nbsp;from:{{msg.from}}&nbsp;to:{{to}}&nbsp;boolean:{{msg.from == to}}-->
+        <el-popover
+          placement="top-start"
+          title="帮助"
+          width="200"
+          trigger="hover"
+          content="鼠标向下滑动展示更多内容， 顶部向上滑动加载更多内容">
+          <i class="el-icon-info" slot="reference"></i>
+          <!--<el-button slot="reference">hover 激活</el-button>-->
+        </el-popover>
+      </div>
+      <div class="talk_con ">
+        <div class="wrapper" id="wrapper" :style="wrapper" ref="wrapper">
+          <ul class="content" :style="content">
+            <li style="margin-top:0px;text-align: center;color:grey">
+              <div v-if="loadingFlag"><i class="el-icon-loading"></i>加载中...</div>
+              <div v-if="!loadingFlag">下拉加载更多...</div>
+            </li>
+            <li class="chatlist">
+              <div v-for="msg in messages">
 
-            <div class="chatin" v-if="msg.from == to">
-              <img width="40px" height="40px"
-                src="https://ss0.bdstatic.com/7Ls0a8Sm1A5BphGlnYG/sys/portrait/item/netdisk.1.5f14a41b.xngdALbPHMrnb9LbPTPmRA.jpg">
-              <span>{{msg.message}}</span>
-            </div>
+                <!--message:{&nbsp;boolean:{{msg.from == to}}-->
+                <div style="color:darkgrey;font-size: 15px;text-align: center">{{msg.date}}</div>
+                <!-- {{msg.toUser}}&nbsp;{{user.id}}-->
+                <div class="chatin" v-if="msg.toUser === user.id">
+                  <!--https://ss0.bdstatic.com/7Ls0a8Sm1A5BphGlnYG/sys/portrait/item/netdisk.1.5f14a41b.xngdALbPHMrnb9LbPTPmRA.jpg-->
+                  <img width="40px" height="40px"
+                       :src="friend.imageUrl=== null?defaultImg:friend.imageUrl">
+                  <span v-if="msg.flag === 1"
+                        v-html="msg.message.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)"></span>
+                  <div v-if="msg.flag === 0">
 
-            <div class="chatout" v-if="msg.to === to">
-              <img width="40px" height="40px"
-                src="https://ss0.bdstatic.com/7Ls0a8Sm1A5BphGlnYG/sys/portrait/item/netdisk.1.5f14a41b.xngdALbPHMrnb9LbPTPmRA.jpg">
-              <span>{{msg.message}}</span>
-            </div>
-          </div>
+                    <span v-if="msg.fileItem.name.split('.').length === 2">
+                      <p v-if="doc.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Word_24_2f2aefb.png"
+                          style="float: left;" width="50px" height="50px"/>{{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="ppt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/PPT_24_79bc280.png"
+                          width="50px" height="50px"
+                          style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="excel.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Excel_24_851dee6.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="pdf.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/PDF_24_694b0da.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="music.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Music_24_2ac587d.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="vedio.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Video_24_703ade3.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="txt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Text_24_7c9f4e9.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="zip.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/ZIP_24_7d2970f.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="img.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Picture_24_7d34de9.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="torrent.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/BT_24_e6ceec7.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="code.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Code_24_cbd51f7.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else>
+                        <img
+                        src="../../assets/img/fileCategoryImg/Misc_24_af08942.png"
+                        width="50px" height="50px" style="float: left;"/>{{msg.fileItem.name}}
+                      </p>
+                    </span>
+                    <span v-else-if="msg.fileItem.name.split('.').length === 1">
+                      <img
+                        src="../../assets/img/fileCategoryImg/Folder_54.png"
+                        width="50px" height="50px" style="float: left;"/> {{msg.fileItem.name}}
+                    </span>
+                    <span>
+                      <el-tooltip class="item" effect="dark" content="保存" placement="top-start">
+                          <i class="el-icon-download" @click="showFileShare(false,msg.fileItem)" style="font-size: 18px"></i>
+                      </el-tooltip>
+                    </span>
+                  </div>
 
+                </div>
+
+                <!--{msg.to === user.id}}&nbsp;{{msg.from}}&nbsp;{{user.id}}-->
+                <div class="chatout" v-if="msg.from === user.id">
+                  <img width="40px" height="40px"
+                       :src="user.imageUrl=== null ?defaultImg:user.imageUrl">
+                  <span v-if="msg.flag === 1"
+                        v-html="msg.message.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)"></span>
+                  <span v-if="msg.flag === 0">
+                     <span v-if="msg.fileItem.name.split('.').length === 2">
+                      <p v-if="doc.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Word_24_2f2aefb.png"
+                          style="float: left;" width="50px" height="50px"/>{{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="ppt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/PPT_24_79bc280.png"
+                          width="50px" height="50px"
+                          style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="excel.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Excel_24_851dee6.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="pdf.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/PDF_24_694b0da.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="music.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Music_24_2ac587d.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="vedio.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Video_24_703ade3.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="txt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Text_24_7c9f4e9.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="zip.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/ZIP_24_7d2970f.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="img.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Picture_24_7d34de9.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="torrent.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/BT_24_e6ceec7.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else-if="code.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Code_24_cbd51f7.png"
+                          width="50px" height="50px" style="float: left;"/>
+                        {{msg.fileItem.name}}
+                      </p>
+                      <p v-else>
+                        <img
+                          src="../../assets/img/fileCategoryImg/Misc_24_af08942.png"
+                          width="50px" height="50px" style="float: left;"/>{{msg.fileItem.name}}
+                      </p>
+                    </span>
+                     <p  v-else-if="msg.fileItem.name.split('.').length === 1">
+                        <img
+                          src="../../assets/img/fileCategoryImg/Folder_54.png"
+                          width="50px" height="50px" style="float: left;"/>
+                      {{msg.fileItem.name}}
+                    </p>
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="anchor"></li>
+          </ul>
         </div>
 
       </div>
@@ -38,10 +231,11 @@
     <el-footer>
       <el-row>
         <el-col :span="4">
-          <el-button>分享文件</el-button>
+          <el-button @click="showFileShare(true,1)">分享文件</el-button>
         </el-col>
         <el-col :span="14">
-          <el-input v-model="outMessage" @keyup.enter.native="sendMessage"></el-input>
+
+          <el-input v-model="outMessage" @keyup.enter.native="sendMessage(1)"></el-input>
         </el-col>
         <el-col :span="2" :offset="1">
           <el-popover
@@ -66,8 +260,11 @@
           </svg>
         </el-col>
         <el-col :span="3">
-          <el-button @click="sendMessage">发送</el-button>
+          <el-button @click="sendMessage(1)">发送</el-button>
         </el-col>
+        <div v-show="fileSharerFlag">
+          <fileSharer @receive="getReceive"/>
+        </div>
       </el-row>
 
     </el-footer>
@@ -77,117 +274,354 @@
 <script>
   import Emotion from '@/components/Emotion/index'
   import VueCookie from 'vue-cookies';
-  import Vue from 'vue';
+  import defaultImg from '../../assets/img/userImg.gif';
+  import axios from 'axios'
+  import BScroll from "better-scroll"
+  import fileSharer from './fileSharer'
+  import qs from 'qs'
+
   export default {
+
+    name: 'chat',
     created() {
       this.initWebSocket();
-
     },
 
     destroyed() {
       this.websock.close() //离开路由之后断开websocket连接
     },
+
     data() {
       return {
         //发送消息内容
         outMessage: '',
         //接收消息内容
-        inMessage:'',
-
-        messages:[],
+        inMessage: '',
+        defaultImg: defaultImg,
+        messages: [],
         comment: '',
         date: new Date().toLocaleDateString(),
         websock: null,
-        to:this.$route.query.friendId,
-        access_token : VueCookie.get("access_token"),
+        to: this.$route.query.friendId,
+        friend: {},
+        access_token: VueCookie.get("access_token"),
         user: JSON.parse(sessionStorage.getItem("user")),
+        loadingFlag: false,//加载图标是否显示
+        wrapperHeight: 0,
+        wrapper: {
+          //'height':  this.wrapperHeight+'px',
+          'height': '750px',
+        },
+        contentHeight: 5,
+        content: {
+          'height': this.contentHeight + 'px',
+          //'height':  '755px',
+        },
+        mouthInterval: 0,
+        fileSharerFlag: true,
+        receiveData: [],//文件分享返回数据
+        isFirst: true,
+        doc: ['doc', 'dot', 'docx', 'dotx', 'docm', 'dotm'],
+        excel: ['xls', 'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 'xltm', 'xlam', 'xlsb'],
+        ppt: ['ppt', 'pot', 'pps', 'ppa', 'pptx', 'potx', 'ppsx', 'ppam', 'pptm', 'potm', 'ppsm'],
+        txt: ['txt', 'md'],
+        zip: ['zip', 'jar', 'rar', 'cab', 'iso', 'ace', '7z', 'tar', 'gz', 'arj', 'lzh', 'uue', 'bz2'],
+        img: ['gif', 'jpg', 'peg', 'bmp', 'png'],
+        torrent: ['torrent'],
+        music: ['mp3', 'midi', 'wma', 'vqf', 'amr'],
+        vedio: ['mp4', 'flv', 'avi', 'rm', 'rmvb', 'mov', 'mtv', 'dat', 'wmv', '3gb', 'amv', 'dmv', 'wmv'],
+        pdf: ['pdf'],
+        code: ['c', 'c#', 'java', 'jsp', 'html', 'css', 'vue', 'js', 'php', 'yml', 'asp', 'go',]
+
       }
     },
-    watch:{
 
-      $route(){
-        this.to= this.$route.query.friendId;
+    computed: {
+
+    },
+    watch: {
+
+      $route() {
+        this.to = this.$route.query.friendId;
       },
-      to:{
-        handler(val, oldVal){
-
-          this.messages.splice(0,this.messages.length);
+      to: {
+        handler(val, oldVal) {
+          this.messages.splice(0, this.messages.length);
         },
         immediate: true
-      }
+      },
+      messages: function (val, oldVal) {
+        //var length =  val.length - oldVal.length;
 
+        // this.wrapperHeight = this.wrapperHeight + length*40;
+        this.contentHeight = this.contentHeight + val.length * 40;
+        //this.wrapperHeight = this.wrapperHeight + val.length*40;
+      }
     },
-    props:['friendId'],
+
+    // props: ['friendId'],
+
     methods: {
       handleEmotion(i) {
-        this.content += i
+        this.outMessage += i
       },
       // 将匹配结果替换表情图片
       emotion(res) {
-
         let word = res.replace(/\#|\;/gi, '')
         const list = ['微笑', '撇嘴', '色', '发呆', '得意', '流泪', '害羞', '闭嘴', '睡', '大哭', '尴尬', '发怒', '调皮', '呲牙', '惊讶', '难过', '酷', '冷汗', '抓狂', '吐', '偷笑', '可爱', '白眼', '傲慢', '饥饿', '困', '惊恐', '流汗', '憨笑', '大兵', '奋斗', '咒骂', '疑问', '嘘', '晕', '折磨', '衰', '骷髅', '敲打', '再见', '擦汗', '抠鼻', '鼓掌', '糗大了', '坏笑', '左哼哼', '右哼哼', '哈欠', '鄙视', '委屈', '快哭了', '阴险', '亲亲', '吓', '可怜', '菜刀', '西瓜', '啤酒', '篮球', '乒乓', '咖啡', '饭', '猪头', '玫瑰', '凋谢', '示爱', '爱心', '心碎', '蛋糕', '闪电', '炸弹', '刀', '足球', '瓢虫', '便便', '月亮', '太阳', '礼物', '拥抱', '强', '弱', '握手', '胜利', '抱拳', '勾引', '拳头', '差劲', '爱你', 'NO', 'OK', '爱情', '飞吻', '跳跳', '发抖', '怄火', '转圈', '磕头', '回头', '跳绳', '挥手', '激动', '街舞', '献吻', '左太极', '右太极']
         let index = list.indexOf(word)
         return `<img src="https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/${index}.gif" align="middle">`
       },
 
-      sendMessage(){
-        this.outMessage = {"from":this.user.id,"to":this.to,"message":this.outMessage,"flag":1,"date":new Date()};
+      sendMessage(flag) {
+        this.outMessage = {
+          "from": this.user.id,
+          "toUser": this.to,
+          "message": this.outMessage,
+          "flag": flag,
+          "date": new Date()
+        };
 
-        if(this.outMessage.message.replace(/(^\s*)|`(\s*$)/g, "").length != 0){
+        if (this.outMessage.message.replace(/(^\s*)|`(\s*$)/g, "").length !== 0) {
           this.websocketsend(JSON.stringify(this.outMessage));
-
         }
-        this.outMessage='';
+        this.outMessage = '';
       },
 
-      initWebSocket(){ //初始化weosocket
-        const wsuri = "ws://127.0.0.1:8763/websocket/"+this.user.id;
+      initWebSocket() { //初始化weosocket
+        const wsuri = "ws://127.0.0.1:8763/websocket/" + this.user.id;
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;
         this.websock.onerror = this.websocketonerror;
         this.websock.onclose = this.websocketclose;
       },
-      websocketonopen(){ //连接建立之后执行send方法发送数据
-        // let actions = {"test":"12345"};
-        //alert(this.$route.params.friendId);
-        // this.websocketsend(JSON.stringify(actions));
-      },
-      websocketonerror(){//连接建立失败重连
-        this.initWebSocket();
-      },
-      websocketonmessage(e){ //数据接收
-        console.log(e.data);
-        console.log(e.data.substring(1,e.data.length - 1));
-        this.inMessage = JSON.parse(e.data.substring(1,e.data.length - 1).replace(/[\\]/g,''));
-        console.log(this.inMessage);
-        this.messages.splice(this.messages.length,0,this.inMessage);
-        console.log(this.messages);
-      },
-      websocketsend(Data){//数据发送
-        console.log(Data);
-        this.outMessage = JSON.parse(Data);
-        this.messages.splice(this.messages.length,0,this.outMessage);
-        this.websock.send(Data);
+      websocketonopen() { //连接建立之后执行send方法发送数据
 
       },
-      websocketclose(e){  //关闭
-        console.log('断开连接',e);
+      websocketonerror() {//连接建立失败重连
+        this.initWebSocket();
+      },
+      websocketonmessage(e) { //数据接收
+        console.log(e.data);
+        var s = e.data.trim().substring(1, e.data.length - 1).replace(/[\\]/g, '');
+        console.log(s);
+        this.inMessage = JSON.parse(s);
+        console.log(this.inMessage);
+        this.messages.splice(this.messages.length, 0, this.inMessage);
+
+        console.log(this.messages);
+      },
+      websocketsend(Data) {//数据发送
+        console.log(Data);
+        this.outMessage = JSON.parse(Data);
+        this.messages.splice(this.messages.length, 0, this.outMessage);
+        this.websock.send(Data);
+      },
+      websocketclose(e) {  //关闭
+        console.log('断开连接', e);
         this.$message({
           message: '好友连接关闭。。。',
           type: 'warning'
         });
       },
+
+      getUserMsg() {
+        axios({
+          url: '/api/message/getUserMsg',
+          method: 'post',
+          params: {
+            access_token: VueCookie.get('access_token'),
+            friendId: this.to,
+            uid: this.user.id,
+            interval: ++this.mouthInterval
+          },
+        })
+          .then((res) => {
+            this.loadingFlag = false;
+            this.messages.splice(0);
+            for (let i = 0; i < res.data.length; i++) {
+              this.messages.splice(this.messages.length, 0, res.data[i]);
+            }
+            if (this.isFirst) {
+              this.scrollToBottom();
+              this.isFirst = false;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message({
+              message: "好友消息加载失败",
+              type: 'warning'
+            })
+          });
+      },
+      scrollToBottom() {
+        this.$nextTick(() => {
+          var div = document.getElementById('wrapper');
+          div.scrollTop = div.scrollHeight;
+
+        })
+      },
+      //文件共享接收子组件需共享文件
+      getReceive(data) {
+        var shareOrSave = this.$store.state.shareOrSave;
+        if(shareOrSave){
+          //分享
+          this.receiveData = data;
+          data.forEach((item, index, array) => {
+            this.outMessage = {
+              "from": this.user.id,
+              "toUser": this.to,
+              "fileItem": item,
+              "flag": 0,
+              "date": new Date()
+            };
+            this.websocketsend(JSON.stringify(this.outMessage));
+            this.outMessage = '';
+          });
+          console.log(this.outMessage);
+        }else{
+          //保存 save
+          var fileItem = this.$store.state.fileItem;
+          var parentId = data[0].id;//保存文件父级id
+          axios({
+            url: '/api/message/fileShare',
+            method: 'post',
+            headers:{
+              'Content-Type':'application/json;charset=UTF-8',
+            },
+            params:{
+              access_token: VueCookie.get('access_token'),
+              friendId: this.to,
+              uid: this.user.id,
+              parentId: parentId
+            },
+            data: fileItem,
+
+          })
+            .then((res) => {
+
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$message({
+                message: "保存失败",
+                type: 'warning'
+              })
+            });
+        }
+
+      },
+      showFileShare(flag,item) {
+        this.$store.commit('setFileSharerFlag', true);
+        if(!flag){
+          //保存
+          this.$store.commit('setFileItem', item);
+          this.$store.commit('setShareOrSave', false);
+        }else{
+          this.$store.commit('setShareOrSave', true);
+        }
+
+      },
+      save(fileItem){
+        console.log(fileItem);
+        axios({
+          url: '/api/message/fileShare',
+          method: 'post',
+          headers:{
+            'Content-Type':'application/json;charset=UTF-8',
+            'access_token': VueCookie.get('access_token')
+          },
+          params:{
+            access_token: VueCookie.get('access_token'),
+            friendId: this.to,
+            uid: this.user.id,
+          },
+          data: fileItem,
+        })
+          .then((res) => {
+            this.loadingFlag = false;
+            this.messages.splice(0);
+            for (let i = 0; i < res.data.length; i++) {
+              this.messages.splice(this.messages.length, 0, res.data[i]);
+            }
+            if (this.isFirst) {
+              this.scrollToBottom();
+              this.isFirst = false;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message({
+              message: "好友消息加载失败",
+              type: 'warning'
+            })
+          });
+      }
     },
     components: {
-      Emotion
+      Emotion, fileSharer
+    },
+    mounted() {
+      //获取用户聊天
+      this.getUserMsg();
+      //获取好友信息
+      axios({
+        url: '/api/friends/getFriend',
+        method: 'post',
+        params: {
+          access_token: VueCookie.get('access_token'),
+          friendId: this.to,
+        },
+      })
+        .then((res) => {
+          this.friend = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message({
+            message: "好友加载失败",
+            type: 'warning'
+          })
+        });
+
+      //聊天框滚动加载
+      this.scroll = new BScroll(this.$refs.wrapper, {
+// 上拉加载
+        pullUpLoad: {
+// 当上拉距离超过30px时触发 pullingUp 事件
+          threshold: -30
+        },
+// 下拉刷新
+        pullDownRefresh: {
+// 下拉距离超过30px触发pullingDown事件
+          threshold: 30,
+// 回弹停留在距离顶部20px的位置
+          stop: 20
+        }
+      })
+      this.scroll.on('pullingUp', () => {
+        console.log('处理上拉加载操作')
+        setTimeout(() => {
+// 事情做完，需要调用此方法告诉 better-scroll 数据已加载，否则上拉事件只会执行一次
+          this.scroll.finishPullUp()
+        }, 2000)
+      })
+      this.scroll.on('pullingDown', () => {
+        console.log('处理下拉刷新操作');
+        this.loadingFlag = true;
+        this.getUserMsg();
+        setTimeout(() => {
+          this.scroll.finishPullDown()
+        }, 1000)
+      });
+
     }
   }
 </script>
 <style scoped>
   .talk_con {
-
     border: lightgrey solid 1px;
   }
 
@@ -222,8 +656,8 @@
     float: right;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    margin: 0 0 0 10px;
+    /*border-radius: 50%;*/
+    margin: 0 30px 0 10px;
   }
 
   .chatlist .chatout span {
@@ -252,7 +686,7 @@
   .chatlist .chatin img {
     float: left;
 
-    border-radius: 50%;
+    /*border-radius: 50%;*/
     margin: 0 10px 0 0;
   }
 
@@ -279,6 +713,34 @@
     border-right-color: #fafafa;
   }
 
+  li {
+    list-style-type: none;
+  }
+
+  .wrapper {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /*overflow: hidden;*/
+    scrollbar-arrow-color: #A1A1A1; /**//*三角箭头的颜色*/
+    scrollbar-face-color: #A1A1A1; /**//*立体滚动条的颜色*/
+    scrollbar-3dlight-color: transparent; /**//*立体滚动条亮边的颜色*/
+    scrollbar-highlight-color: transparent; /**//*滚动条空白部分的颜色*/
+    scrollbar-shadow-color: transparent; /**//*立体滚动条阴影的颜色*/
+    scrollbar-darkshadow-color: transparent; /**//*立体滚动条强阴影的颜色*/
+    scrollbar-track-color: #F9F9F9; /**//*立体滚动条背景颜色*/
+    scrollbar-base-color: transparent; /**//*滚动条的基本颜色*/
+  }
+
+  .content {
+    width: 100%;
+    background: snow;
+  }
+
+
 </style>
 <style>
   .su[data-v-133ed8df] {
@@ -296,6 +758,39 @@
   .icon {
     width: 35px;
     height: 35px;
+  }
+
+  ::-webkit-scrollbar {
+
+    /*滚动条整体样式*/
+
+    width: 4px; /*高宽分别对应横竖滚动条的尺寸*/
+
+    height: 4px;
+
+  }
+
+  ::-webkit-scrollbar-thumb {
+
+    /*滚动条里面小方块*/
+
+    border-radius: 5px;
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+
+    background: rgba(0, 0, 0, 0.2);
+
+  }
+
+  ::-webkit-scrollbar-track {
+
+    /*滚动条里面轨道*/
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+
+    border-radius: 0;
+
+    background: rgba(0, 0, 0, 0.1);
   }
 </style>
 

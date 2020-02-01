@@ -15,14 +15,14 @@
                       width="60px" height="60px"/>
                   </el-col>
                   <el-col :span="7">
-                    <router-link to="/friends/chat">新好友</router-link>
+                    <router-link to="/friends/friendRequest">新好友</router-link>
                   </el-col>
                   <el-col :span="10">
-                    <span>02-24 18:28</span>
+                    <el-badge v-if="friendRequestCount != 0" :value="friendRequestCount" class="item">
+
+                    </el-badge>
                   </el-col>
                 </el-row>
-
-
               </div>
             </el-tab-pane>
             <el-tab-pane name="second">
@@ -35,12 +35,12 @@
                   <el-col :span="7">
                     <!--https://pan.baidu.com/sns/yun-static/disk-conversation/widget/sectionLists/img/service-icon_9096d0f.png-->
                     <img
-                      :src="friend.imagePath === null||friend.imagePath.length === 0 ?defaultImg:friend.imagePath"
+                      :src="friend.friend.imageUrl === null||friend.friend.imageUrl.length === 0 ?defaultImg:friend.friend.imageUrl"
                       width="60px" height="60px"/>
                   </el-col>
                   <el-col :span="7">
 
-                    <router-link :to="{name:'detail',query:{'friendId':friend.code}}" :friendId="friend.code">{{friend.name}}</router-link>
+                    <router-link :to="{name:'detail',query:{'friendId':friend.friend.id}}" :friendId="friend.friend.id">{{friend.friend.username}}</router-link>
                     <!--<router-link :to="{name:'chat',query:{'friendId':friend.code}}" :friendId="friend.code">{{friend.name}}</router-link>-->
                   </el-col>
 
@@ -61,7 +61,6 @@
               </el-row>
             </el-footer>
           </el-tabs>
-
         </template>
     </el-aside>
     <el-main>
@@ -85,6 +84,7 @@
         access_token : VueCookie.get("access_token"),
         user: JSON.parse(sessionStorage.getItem("user")),
         friends:[],
+        friendRequestCount: ''
       }
     },
 
@@ -100,7 +100,7 @@
           inputErrorMessage: '格式不正确'
         }).then(({ value }) => {
           axios({
-            url:'/api/friends/insertFriend',
+            url:'/api/friends/sendRequestOfFriend',
             method:'post',
             params:{
               access_token:this.access_token,
@@ -112,12 +112,12 @@
               if (res.data === 0){
                 this.$message({
                   type: 'warn',
-                  message: '添加失败'
+                  message: '好友请求失败'
                 });
               } else{
                 this.$message({
                   type: 'success',
-                  message: '添加成功'
+                  message: '好友请求成功'
                 });
               }
 
@@ -150,12 +150,34 @@
             console.log(this.friends);
         })
           .catch(error => {
-            console.log(error);
+            this.$message({
+              'type':'warn',
+              'message':'好友加载失败'
+            })
+          });
+      },
+      getRequestOfFriend(){
+        axios({
+          url: "/api/friends/getRequestOfFriend",
+          method: "get",
+          params: {
+            access_token: VueCookie.get("access_token"),
+            uid:this.user.id
+          }
+        }).then(msg => {
+          //alert(msg.data.length);
+          this.friendRequestCount = msg.data.filter((data)=>{
+             return data.flag === 2
+          }).length;
+        })
+          .catch(error => {
+
           });
       }
     },
     mounted(){
       this.getAllFriendsAndGroup();
+      this.getRequestOfFriend();
     }
   }
 </script>

@@ -5,18 +5,19 @@
       <el-col :span="3" class="head">雪域世界</el-col>
       <el-col :span="12">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" >
-          <el-menu-item index="1">
-            <router-link to="/">首页</router-link>
+          <el-menu-item index="1" @click="changeIndex('1')">
+            <router-link to="/index">
+              首页
+            </router-link>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="2" @click="changeIndex('2')">
             <router-link to="/friends">好友</router-link>
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="3" @click="changeIndex('3')">
             动态圈
-            <!--<router-link to="/">动态圈</router-link>-->
           </el-menu-item>
-          <el-menu-item index="4">
-            <router-link to="/more"> 更多</router-link>
+          <el-menu-item index="4" @click="changeIndex('4')">
+            <router-link to="/more" > 更多</router-link>
 
             <!--<router-link to="/">动态圈</router-link>-->
           </el-menu-item>
@@ -77,10 +78,16 @@
       components:{UserLoginExpire},
       data(){
           return{
-            activeIndex:"1",
+            activeIndex:'',
             username:VueCookie.get('username'),
             // flag:true,
           }
+      },
+      methods:{
+        changeIndex(val){
+
+          sessionStorage.setItem('activeIndex',val);
+        }
       },
       mounted(){
         axios({
@@ -88,12 +95,17 @@
           method:'post',
           params:{
             access_token:VueCookie.get('access_token'),
+
             username:this.username
+
           },
         })
           .then((res)=>{
+            //console.log(res.data);
             this.$store.commit('setUserInfo',res.data);
             sessionStorage.setItem('user',JSON.stringify(res.data));
+            var index  = sessionStorage.getItem('activeIndex');
+            //this.activeIndex = index.length === 0 ? '1':index ;
           })
           .catch((err)=>{
             console.log(err);

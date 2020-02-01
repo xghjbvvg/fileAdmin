@@ -20,9 +20,15 @@
         <el-row>
           <el-col :span="24">
             <el-menu class="el-menu-demo" mode="horizontal">
-              <el-menu-item index="1"><router-link to="/userCenter">首页</router-link></el-menu-item>
-              <el-menu-item index="2"><router-link to="/userCenter/passwordProtect">密码保护</router-link></el-menu-item>
-              <el-menu-item index="3"><router-link to="/userCenter/resetPassword">密码修改</router-link></el-menu-item>
+              <el-menu-item index="1">
+                <router-link to="/userCenter">首页</router-link>
+              </el-menu-item>
+              <el-menu-item index="2">
+                <router-link to="/userCenter/passwordProtect">密码保护</router-link>
+              </el-menu-item>
+              <el-menu-item index="3">
+                <router-link to="/userCenter/resetPassword">密码修改</router-link>
+              </el-menu-item>
             </el-menu>
           </el-col>
         </el-row>
@@ -66,8 +72,8 @@
               <i class="el-icon-document"></i> 账户申诉
             </el-col>
           </el-row>
-          <el-row class="common" >
-            <el-col :span="8" :offset="4" style="cursor: pointer" >
+          <el-row class="common">
+            <el-col :span="8" :offset="4" style="cursor: pointer">
               <i class="el-icon-refresh"></i><span @click="logout">账户注销</span>
             </el-col>
           </el-row>
@@ -90,124 +96,125 @@
   import vueCookie from 'vue-cookies'
   import axios from 'axios'
   import userLoginExpire from '../user/UserLoginExpire'
+
   export default {
     name: "userCenter",
-    components:{
+    components: {
       userLoginExpire
     },
     data() {
       return {
         username: vueCookie.get('username'),
-        user:{},
-        imageUrl:'',
+        user: {},
+        imageUrl: '',
         phone: '',
-        email:'',
-        destroyText:'销毁中。。。。',
-        destroySuccess:false
+        email: '',
+        destroyText: '销毁中。。。。',
+        destroySuccess: false
       }
     },
-    methods:{
-      handlePhone(){
+    methods: {
+      handlePhone() {
         var phone = this.user.phone;
-        var s = phone.substring(0,2);
-        var s1 = phone.substring(9,11);
-        this.user.phone = s+"******"+s1
+        var s = phone.substring(0, 2);
+        var s1 = phone.substring(9, 11);
+        this.user.phone = s + "******" + s1
       },
-      handleEmail(){
+      handleEmail() {
         var email = this.user.email;
         var split = email.split("@");
-        var s = split[0].substring(0,2);
-        var s1 = split[0].substring(split[0].length-2,split[0].length);
-        this.user.email = s+"****"+s1+'@'+split[1];
+        var s = split[0].substring(0, 2);
+        var s1 = split[0].substring(split[0].length - 2, split[0].length);
+        this.user.email = s + "****" + s1 + '@' + split[1];
       },
-      logout(){
+      logout() {
         // alert(6);
         vueCookie.remove('username');
         vueCookie.remove('access_token');
         this.$router.push("/user/login");
       },
-      deleteUser(){
-          var confirm = window.confirm("亲，你确定要注销么？");
-          if(confirm){
-            const loading = this.$loading({
-              lock: true,
-              text: this.destroyText,
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-            var interval = setInterval(() => {
-              if (this.destroySuccess) {
-                loading.close();
-                this.$message({
-                  message:'亲，销毁成功，欢迎再次见到你。。。。。',
-                  type:'success'
-                });
-                vueCookie.remove('username');
-                vueCookie.remove('access_token');
-                this.$router.push("/user/login");
-                clearInterval(interval);
-              }
-            },1000);
-            axios({
-              url:'/api/user/deleteUser',
-              method:'post',
-              params:{
-                access_token:vueCookie.get('access_token'),
-                id:this.user.id,
-                username:this.user.username
-              },
-              header:{
-                "content-type":"application/json;charset=utf-8"
-              }
+      deleteUser() {
+        var confirm = window.confirm("亲，你确定要注销么？");
+        if (confirm) {
+          const loading = this.$loading({
+            lock: true,
+            text: this.destroyText,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          var interval = setInterval(() => {
+            if (this.destroySuccess) {
+              loading.close();
+              this.$message({
+                message: '亲，销毁成功，欢迎再次见到你。。。。。',
+                type: 'success'
+              });
+              vueCookie.remove('username');
+              vueCookie.remove('access_token');
+              this.$router.push("/user/login");
+              clearInterval(interval);
+            }
+          }, 1000);
+          axios({
+            url: '/api/user/deleteUser',
+            method: 'post',
+            params: {
+              access_token: vueCookie.get('access_token'),
+              id: this.user.id,
+              username: this.user.username
+            },
+            header: {
+              "content-type": "application/json;charset=utf-8"
+            }
+          })
+            .then(() => {
+              axios({
+                url: '/api/oauth/token',
+                method: 'delete',
+                params: {
+                  access_token: vueCookie.get('access_token'),
+                  username: this.user.username,
+                  password: this.user.pass,
+                  grant_type: "password",
+                  scope: "select",
+                  client_id: "client_2",
+                  client_secret: "123456"
+                },
+                header: {
+                  "content-type": "application/json;charset=utf-8"
+                }
+              })
+                .then(() => {
+                  this.destroySuccess = true;
+                })
+                .catch(() => {
+                  this.$message({
+                    message: '亲，销毁用户失败。。。。。',
+                    type: 'warning'
+                  })
+                })
             })
-              .then(()=>{
-                axios({
-                  url:'/api/oauth/token',
-                  method:'delete',
-                  params:{
-                    access_token:vueCookie.get('access_token'),
-                    username: this.user.username,
-                    password: this.user.pass,
-                    grant_type:"password",
-                    scope:"select",
-                    client_id:"client_2",
-                    client_secret:"123456"
-                  },
-                  header:{
-                    "content-type":"application/json;charset=utf-8"
-                  }
-                })
-                  .then(()=>{
-                    this.destroySuccess = true;
-                  })
-                  .catch(()=>{
-                    this.$message({
-                      message:'亲，销毁用户失败。。。。。',
-                      type:'warning'
-                    })
-                  })
+            .catch(() => {
+              this.$message({
+                message: '亲，销毁用户失败。。。。。',
+                type: 'warning'
               })
-              .catch(()=>{
-                this.$message({
-                  message:'亲，销毁用户失败。。。。。',
-                  type:'warning'
-                })
-              })
-          }
+            })
+        }
 
       }
     },
-    mounted(){
+    mounted() {
       this.user = JSON.parse(sessionStorage.getItem('user'));
       console.log(this.user);
-     this.handlePhone();
-        this.handleEmail();
-       // this.user = JSON.parse(sessionStorage.getItem('user'));
-         if(this.user.imageUrl === null){
-           this.imageUrl = 'http://localhost:8763/static/head/img51.gif';
-         }else{
-           this.imageUrl = this.user.imageUrl;
-         }
+      this.handlePhone();
+      this.handleEmail();
+      // this.user = JSON.parse(sessionStorage.getItem('user'));
+      if (this.user.imageUrl === null) {
+        this.imageUrl = 'http://localhost:8763/static/head/img51.gif';
+      } else {
+        this.imageUrl = this.user.imageUrl;
+      }
 
       /* axios({
          url:'/api/user/getUser',
@@ -249,9 +256,11 @@
     margin: auto auto;
     /*background:red;*/
   }
-  .el-menu-demo li{
+
+  .el-menu-demo li {
     margin: 0 0;
   }
+
   .el-header {
     width: 100%;
     height: 150px !important;
@@ -318,10 +327,12 @@
   .common:hover {
     background-color: lightgoldenrodyellow;
   }
-  .headImg{
+
+  .headImg {
     border-radius: 50px;
   }
-  .headImg2{
+
+  .headImg2 {
     border-radius: 75px;
   }
 

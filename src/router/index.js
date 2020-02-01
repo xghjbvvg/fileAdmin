@@ -5,6 +5,7 @@ import FriendIndex from '@/components/friends/index'
 import FriendDefault from '@/components/friends/default'
 import FriendDetail from '@/components/friends/detailInfo'
 import FriendChat from '@/components/friends/chat'
+import FriendRequest from '@/components/friends/friendRequest'
 import demo from '@/components/friends/demo'
 import Login from '@/components/user/login'
 import Register from '@/components/user/register'
@@ -17,16 +18,18 @@ import resetPassword from '@/components/userCenter/resetPassword'
 import fileIndex from '@/components/home/fileIndex'
 import moreIndex from '@/components/more/index'
 import time from '@/components/more/timeMemory/index'
+import scoll from '@/components/test/scoll'
 Vue.use(Router)
 
 const router = new Router({
   routes: [
+
     {
-      path: '/',
+      path: '/index',
       name: 'index',
       component: index,
       children: [
-        {path: '/', name: 'fileIndex', component: fileIndex},
+        {path: '/index', name: 'fileIndex', component: fileIndex},
         {
           path: '/friends',
           name: 'friends',
@@ -34,8 +37,8 @@ const router = new Router({
           children: [
             {path:'/friends',name:'default',component:FriendDefault},
             {path:'/friends/chat',name:'chat',component:FriendChat},
-            {path:'/friends/detail',name:'detail',component:FriendDetail}
-
+            {path:'/friends/detail',name:'detail',component:FriendDetail},
+            {path:'/friends/friendRequest',name:'detail',component:FriendRequest}
           ]
         },
         {
@@ -71,7 +74,7 @@ const router = new Router({
 
       ]
     },
-    {path:'/demo',name:'demo',component:demo},
+    {path:'/scoll',name:'scoll',component:scoll},
 
   ]
 })
@@ -79,11 +82,10 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // ...
   var access_token = VueCookie.get("access_token");
-  if(access_token == null && to.path !== '/user/login' && to.path !== '/user/register'){
+  if(access_token === null && to.path !== '/user/login' && to.path !== '/user/register'){
     router.push("/user/login");
-  }else if(access_token != null && (to.path === '/user/login' || to.path === '/user/register')){
-    alert('亲，你已经登入过了')
-    router.push("/");
+  }else if(access_token !== null && (to.path === '/user/login' || to.path === '/user/register')){
+    router.push("/index");
   }else {
     next();
   }
