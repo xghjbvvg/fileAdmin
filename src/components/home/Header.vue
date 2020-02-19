@@ -14,7 +14,7 @@
             <router-link to="/friends">好友</router-link>
           </el-menu-item>
           <el-menu-item index="3" @click="changeIndex('3')">
-            动态圈
+            <router-link to="/dynamic" > 动态圈</router-link>
           </el-menu-item>
           <el-menu-item index="4" @click="changeIndex('4')">
             <router-link to="/more" > 更多</router-link>
@@ -24,7 +24,7 @@
         </el-menu>
       </el-col>
       <el-col :span="1" >
-        <img src="../../assets/img/userImg.gif" width="50" height="50">
+        <img :src="imageUrl" width="50" height="50">
       </el-col>
       <el-col :span="3" >
         <el-dropdown trigger="click">
@@ -42,25 +42,27 @@
               <router-link to="/userCenter">个人资料</router-link>
             </el-dropdown-item>
             <el-dropdown-item class="clearfix">
-              个人帮助
+              <span @click="open">联系我</span>
             </el-dropdown-item>
             <el-dropdown-item class="clearfix">
-              注销
+              <span @click="logout">注销</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-col>
       <el-col :span="1">
         <el-tooltip class="item" effect="dark" content="消息" placement="top-start">
-          <el-badge :value="12" class="item">
-            <i class="el-icon-bell"></i>
+          <el-badge :value="unreadMsgCount" class="item">
+            <router-link to="/friends"><i class="el-icon-bell"></i></router-link>
           </el-badge>
         </el-tooltip>
 
       </el-col>
-      <el-col :span="1">
+      <el-col :span="1" style="padding-top:10px">
         <el-tooltip class="item" effect="light" content="意见反馈" placement="top-start">
-          <i class="el-icon-tickets"></i>
+          <router-link to="/question">
+            <i class="el-icon-tickets"></i>
+          </router-link>
         </el-tooltip>
       </el-col>
     </el-row>
@@ -70,7 +72,8 @@
 </template>
 
 <script>
-  import VueCookie from 'vue-cookies'
+  import vueCookie from 'vue-cookies'
+  import defaultImg from '../../assets/img/userImg.gif';
   import UserLoginExpire from '../user/UserLoginExpire'
   import axios from 'axios'
     export default {
@@ -79,33 +82,71 @@
       data(){
           return{
             activeIndex:'',
-            username:VueCookie.get('username'),
-            // flag:true,
+            username:vueCookie.get('username'),
+            unreadMsgCount: 0,
+            imageUrl:'',
+
           }
       },
       methods:{
-        changeIndex(val){
+        open(){
+          this.$alert('QQ:3144933378<br/>' +
+            '微信:18270671294<br/>' +
+            '邮箱:HuangChiXin6@163.com<br/>' +
+            'github：https://github.com/xghjbvvg/springcloud-file-admin<br/>',
 
+            '联系方式', {
+            dangerouslyUseHTMLString: true
+          });
+        },
+        logout() {
+          vueCookie.remove('username');
+          vueCookie.remove('access_token');
+          this.$router.push("/user/login");
+        },
+        changeIndex(val){
           sessionStorage.setItem('activeIndex',val);
-        }
+        },
+
       },
       mounted(){
         axios({
           url:'/api/user/getUser',
           method:'post',
           params:{
-            access_token:VueCookie.get('access_token'),
-
+            access_token:vueCookie.get('access_token'),
             username:this.username
-
           },
         })
           .then((res)=>{
             //console.log(res.data);
             this.$store.commit('setUserInfo',res.data);
+            if(res.data.imageUrl === null){
+              this.imageUrl = defaultImg;
+            }else{
+              this.imageUrl = res.data.imageUrl;
+            }
+
             sessionStorage.setItem('user',JSON.stringify(res.data));
-            var index  = sessionStorage.getItem('activeIndex');
-            //this.activeIndex = index.length === 0 ? '1':index ;
+            axios({
+              url:'/api/message/getUnreadMsgCount',
+              method:'post',
+              params:{
+                access_token:vueCookie.get('access_token'),
+                uid:res.data.id
+              },
+            })
+              .then((res)=>{
+                this.unreadMsgCount = res.data;
+              })
+              .catch((err)=>{
+
+                this.$message({
+                  message:"用户加载失败",
+                  type:'warning'
+                })
+              })
+
           })
           .catch((err)=>{
             console.log(err);

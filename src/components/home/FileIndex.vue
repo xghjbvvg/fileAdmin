@@ -447,6 +447,7 @@
         });
         if (!flag) {
           this.$store.state.downloadList.push(this.tableData[index]);
+
         }
       },
       //下载实际操作
@@ -516,6 +517,7 @@
       //  查找根目录文件
       getFileMainMenu() {
         this.currentPath = [];
+
         axios({
           url: "/api/file/getMainMenu",
           method: "get",
@@ -555,6 +557,7 @@
           }
         })
           .then(msg => {
+            console.log(msg.data);
             if (msg.data.length === 0) {
               // this.uploadPath = this.currentPath[this.currentPath.length];
               this.tableData = [];

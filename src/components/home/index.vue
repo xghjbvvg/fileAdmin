@@ -105,12 +105,12 @@ export default {
     };
   },
   computed: {
-    status() {
+   /* status() {
       return this.files.length > 0 ? this.files[0].status : null;
-    }
+    }*/
   },
   watch: {
-    files: {
+   /* files: {
       handler() {
         // this.tableData = [];
         this.files.forEach(e => {
@@ -129,10 +129,10 @@ export default {
         // }
       },
       deep: true
-    }
+    }*/
   },
   methods: {
-    /*文件显示操作*/
+   /* /!*文件显示操作*!/
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -306,8 +306,6 @@ export default {
         .then(msg => {
           //将上传路径
           this.uploadPath = msg.data[0].absolutePath;
-          console.log(msg.data);
-          console.log(this.uploadPath);
           this.tableData = msg.data;
           this.addFiled(this.tableData);
         })
@@ -503,7 +501,7 @@ export default {
       }
     },
 
-    /*上传头部设置*/
+    /!*上传头部设置*!/
     changeUploadStyle() {
       this.uploadStyle = !this.uploadStyle;
     },
@@ -520,7 +518,7 @@ export default {
       }
     },
 
-    /*文件上传操作,上传参数设置*/
+    /!*文件上传操作,上传参数设置*!/
     beforeUpload(up, file) {
       console.log(this.user);
 
@@ -572,8 +570,6 @@ export default {
                 alert("亲，文件已经上传过了。。。。");
                 f.status = 5;
               } else {
-
-
               }
 
             })
@@ -587,7 +583,7 @@ export default {
         });
 
       });
-      this.up = up;
+      //this.up = up;
 
     },
     //删除上传文件
@@ -628,8 +624,8 @@ export default {
         init: {
           FilesAdded: this.filesAdded,
           BeforeUpload: this.beforeUpload,
-          /* UploadProgress: this.uploadProgress,
-             FileUploaded: this.fileUploaded,*/
+          /!* UploadProgress: this.uploadProgress,
+             FileUploaded: this.fileUploaded,*!/
           Error: this.error
         }
       });
@@ -641,12 +637,12 @@ export default {
         this.path = this.tableData[index].url;
         alert(this.path);
         this.showFile = true;
-    }
+    }*/
   },
   mounted: function() {
     //初始化文件上传
-    this.initPlUploader();
-    this.getFileMainMenu();
+   /* this.initPlUploader();
+    this.getFileMainMenu();*/
   }
 };
 </script>

@@ -14,7 +14,7 @@ module.exports = {
       '/api': {
         //120.78.88.169:8080
         //http://127.0.0.1:8081
-        target: 'http://127.0.0.1:8763',
+        target: 'http://120.78.88.169:8763',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

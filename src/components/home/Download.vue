@@ -156,7 +156,7 @@
       },
       interval(list, j) {
         this.percent = 0;
-        let path = this.$store.state.downloadList[j].absolutePath;
+        let path = this.$store.state.downloadList[j].path;
         this.download(path);
         let interval = setInterval(() => {
           axios({

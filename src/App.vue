@@ -12,7 +12,14 @@
     name: "HelloWorld",
   }
 </script>
-
+<style>
+  a:-webkit-any-link{
+    text-decoration: none;
+  }
+  a{
+    text-decoration: none;
+  }
+</style>
 <style scoped>
   #app{
     width:100%;

@@ -10,12 +10,15 @@
               <span class="head letter">域</span>
             </el-col>
             <el-col :span="6">
-              <p class="contactMe">联系我&nbsp;&nbsp;&nbsp;</p>
-              <p class="contactMe">问题反馈&nbsp;&nbsp;&nbsp;</p>
-              <p class="contactMe">关于</p>
+              <p class="contactMe" @click="open">联系我&nbsp;&nbsp;&nbsp;</p>
+              <p class="contactMe">
+                <router-link to="/question" style="color: white;">
+                  问题反馈
+                </router-link>
+                &nbsp;&nbsp;&nbsp;</p>
+
             </el-col>
           </el-row>
-
 
         </el-header>
         <el-container>
@@ -57,6 +60,17 @@
         };
       },
       methods: {
+        open(){
+          this.$alert('QQ:3144933378<br/>' +
+            '微信:18270671294<br/>' +
+            '邮箱:HuangChiXin6@163.com<br/>' +
+            'github：https://github.com/xghjbvvg/springcloud-file-admin<br/>',
+
+            '联系方式', {
+              dangerouslyUseHTMLString: true
+            });
+        },
+
         //改变背景图片
         changeImage(i) {
           if (i === 1) {

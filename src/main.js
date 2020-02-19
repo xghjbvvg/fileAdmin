@@ -10,7 +10,13 @@ import uploader from 'vue-simple-uploader'
 import plupload from 'plupload'
 import SlideVerify from 'vue-monoplasty-slide-verify';
 import VueCookie from 'vue-cookies'
-
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+import 'vue-event-calendar/dist/style.css' //^1.1.10, CSS has been extracted as one file, so you can easily update it.
+import vueEventCalendar from 'vue-event-calendar'
+// locale can be 'zh' , 'en' , 'es', 'pt-br', 'ja', 'ko', 'fr', 'it', 'ru', 'de', 'vi', 'ua', 'no, 'no-nn'
+Vue.use(vueEventCalendar, {locale: 'zh',color: 'lightgrey'});
+Vue.use(mavonEditor)
 Vue.use(VueCookie);
 Vue.use(SlideVerify);
 Vue.use(plupload);

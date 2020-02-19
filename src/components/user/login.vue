@@ -56,14 +56,14 @@
             <el-button>注册</el-button>
           </router-link>
         </el-form-item>
-        <el-form-item>
-          <span class="forgetPassword">忘记密码?</span>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <span class="loginByPhone" @click="changeLoginWay">手机登入</span>
+        <el-form-item style="text-align: right">
+          <span class="forgetPassword">
+            <router-link to='/resetPwd'>忘记密码?</router-link>
+          </span>
+
+         <!-- <span class="loginByPhone" @click="changeLoginWay">手机登入</span>-->
         </el-form-item>
       </el-form>
-
-
     </el-container>
   </div>
 
@@ -151,8 +151,9 @@
             {validator: validateUsername, trigger: 'blur'}
           ],
         },
+
         loginSuccess:false,
-        loadingText:"登入中。。。"
+        loadingText:"凡心所向 素履所往  生如逆旅 一苇以航"
       };
     },
     methods: {
@@ -341,6 +342,9 @@
           })
           .catch(_ => {});
       },
+      resetPwd(){
+
+      },
       // 发送验证码
       sendCode(formName) {
         this.$refs[formName].validate((valid) => {
@@ -423,9 +427,12 @@
 
   .forgetPassword {
     text-align: left;
-    margin: 0 0 0 0;
-    cursor: pointer;
 
+    padding-right: 20px;
+    cursor: pointer;
+  }
+  a{
+    color:black;
   }
 
   .forgetPassword:hover {

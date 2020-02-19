@@ -196,7 +196,7 @@
               ]
             },
             fullscreenLoading:false,
-            loadingText:'注册登入中....',
+            loadingText:'注册中....',
             registerSuccess:false
           }
         },
@@ -216,7 +216,7 @@
                   if(this.registerSuccess){
                     loading.close();
                     this.$message({
-                      message: '登入成功。。。。',
+                      message: '注册成功。。。。',
                       type: 'success'
                     });
                     clearInterval(interval);
@@ -238,68 +238,8 @@
                   withCredentials:true
                 })
                   .then((res)=>{
-
-                    // console.log(JSON.stringify(this.register));
-                    axios({
-                      url:'/api/oauth/token',
-                      method:'post',
-                      params:{
-                        username: this.register.username,
-                        password: this.register.password,
-                        grant_type:"password",
-                        scope:"select",
-                        client_id:"client_2",
-                        client_secret:"123456"
-                      },
-                      header:{
-                        "content-type":"application/json;charset=utf-8"
-                      }
-                    })
-                      .then((res)=>{
-
-                        if(res.data.access_token != null){
-                          console.log(res.data.access_token);
-                          axios({
-                            url:'/api/user/insertHistory',
-                            method:'post',
-                            params:{
-                              access_token:res.data.access_token,
-                            },
-                            data:{
-                              browser: this.myBrowser(),
-                              device: this.IsPC(),
-                              way:  '密码登入',
-                              user: {
-                                username: this.register.username,
-                              }
-                            },
-                            header:{
-                              "content-type":"application/json;charset=utf-8"
-                            }
-                          }).then(()=>{
-                            this.registerSuccess = true;
-                            console.log(res.data.access_token);
-                            VueCookie.set("access_token",res.data.access_token,86400);
-                            VueCookie.set("username",this.register.username,86400);
-                            router.push("/index");
-                          }).catch((err)=>{
-                            loading.close();
-                            this.$message({
-                              message: '登入失败',
-                              type: 'warning'
-                            });
-                          })
-
-                        }
-                      })
-                      .catch((err)=>{
-                        loading.close();
-                        this.$message({
-                          message: '注册登入失败',
-                          type: 'warning'
-                        });
-                      });
-
+                    this.registerSuccess = true;
+                    router.push("/user/login");
                   })
                   .catch((error)=>{
                     loading.close();

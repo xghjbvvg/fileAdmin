@@ -45,50 +45,7 @@
       </el-col>
     </el-row>
     <hr/>
-    <el-row>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="20" style="padding-top:75px">
-            <img src="../../assets/img/1109709.gif" width="150" height="150"/>
-          </el-col>
-          <el-col :span="20">
-            电话改密
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="14" style="margin-top: 50px">
-        <el-row>
-          <el-col :span="20">
-            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <el-form-item label="新密码" prop="pass">
-                <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="确认密码" prop="checkPass">
-                <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="电话" prop="phone">
-                <el-input  v-model="ruleForm.phone"></el-input>
-              </el-form-item>
-              <el-form-item label="验证码" prop="numberCode">
-                <el-input type="text" v-model="ruleForm.numberCode" @blur="isEquals" autocomplete="off"
-                          style="width: 100px;float: left;">
-                </el-input>
-                <el-button v-if="isSendCode">
-                  <span  @click="sendCodeByEmail('ruleForm')" style="padding: 0 0;">发送验证码</span>
-                </el-button>
-                <el-button v-if="!isSendCode">
-                  <span><span class="second">{{second}}</span>秒重试</span>
-                </el-button>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="submitFormByEmail('ruleForm')">提交</el-button>
-                <el-button @click="resetForm('ruleForm')">重置</el-button>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+
   </div>
 
 </template>

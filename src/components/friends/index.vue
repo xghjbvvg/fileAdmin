@@ -3,7 +3,7 @@
     <el-aside >
         <template >
           <el-tabs type="border-card">
-            <el-tab-pane name="first">
+            <el-tab-pane lebel="first">
               <span class="head" slot="label">
                 <i class="el-icon-message"></i>会话
               </span>
@@ -23,9 +23,40 @@
                     </el-badge>
                   </el-col>
                 </el-row>
+                <el-row v-for="(item,index) in messageSessionList">
+                  <el-col :span="6">
+                    <img
+                      :src="item.image_url === null||item.image_url.length === 0 ?defaultImg:item.image_url"
+                      width="60px" height="60px"/>
+                  </el-col>
+                  <el-col :span="7">
+                    <el-row>
+                      <el-col :span="8" style="font-size: 22px">
+                        <router-link :to="{name:'chat',query:{'friendId':item.to}}">
+                          <span @click="updateRead(index)">{{item.username}}</span>
+                        </router-link>
+                      </el-col>
+                      <el-col :span="8" style="font-size: 10px;color:grey;padding-top: 10px;">
+                        <span>{{new Date(item.date).format("yy-MM-dd hh:mm")}}</span>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :span="13">
+                        <span style="color:darkgrey"> {{item.message}}</span>
+                      </el-col>
+                      <el-col :span="8">
+
+                        <el-badge v-if="item.unread !== 0" :value="item.unread" class="item">
+                        </el-badge>
+                      </el-col>
+                    </el-row>
+                  </el-col>
+
+
+                </el-row>
               </div>
             </el-tab-pane>
-            <el-tab-pane name="second">
+            <el-tab-pane lebel="second">
               <span class="head" slot="label">
                 <i class=" el-icon-mobile-phone"></i> 好友
 
@@ -73,7 +104,31 @@
   import VueCookie from 'vue-cookies';
   import defaultImg from '../../assets/img/userImg.gif';
   import axios from 'axios'
+  Date.prototype.format = function(format){
+    /*
+    * eg:format="YYYY-MM-dd hh:mm:ss";
+    */
+    var o = {
+      "M+" : this.getMonth()+1, //month
+      "d+" : this.getDate(),   //day
+      "h+" : this.getHours(),  //hour
+      "m+" : this.getMinutes(), //minute
+      "s+" : this.getSeconds(), //second
+      "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+      "S" : this.getMilliseconds() //millisecond
+    }
 
+    if(/(y+)/.test(format)) {
+      format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+
+    for(var k in o) {
+      if(new RegExp("("+ k +")").test(format)) {
+        format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+      }
+    }
+    return format;
+  }
   export default {
     data() {
       return {
@@ -84,7 +139,8 @@
         access_token : VueCookie.get("access_token"),
         user: JSON.parse(sessionStorage.getItem("user")),
         friends:[],
-        friendRequestCount: ''
+        friendRequestCount: '',
+        messageSessionList:[],
       }
     },
 
@@ -147,7 +203,6 @@
           }
         }).then(msg => {
             this.friends = msg.data;
-            console.log(this.friends);
         })
           .catch(error => {
             this.$message({
@@ -173,11 +228,32 @@
           .catch(error => {
 
           });
+      },
+      getMessageSessionList(){
+        axios({
+          url: "/api/message/getMsgSession",
+          method: "get",
+          params: {
+            access_token: VueCookie.get("access_token"),
+            uid:this.user.id
+          }
+        })
+          .then(msg => {
+            this.messageSessionList = msg.data
+            console.log(this.messageSessionList);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
+      updateRead(index){
+        this.messageSessionList[index].unread = 0;
       }
     },
     mounted(){
       this.getAllFriendsAndGroup();
       this.getRequestOfFriend();
+      this.getMessageSessionList();
     }
   }
 </script>

@@ -131,7 +131,7 @@
           this.randomImgList= [];
           for (var i = 0; i <= 5; i++) {
             var num = Math.floor((Math.random() * 50) + 1);
-            this.randomImgList[i] = "http://localhost:8763/static/head/img"+num+".jpg";
+            this.randomImgList[i] = "http://120.78.88.169:8763/static/head/img"+num+".jpg";
           }
 
           this.flag = true;

@@ -1,11 +1,8 @@
 <template>
   <el-container>
     <el-header>
-      <el-row style="text-align: right;background: #F5F5F5;height: 70px;padding-top: 20px;">
-        <el-col :span="12">{{friend.username}}</el-col>
-        <el-col :span="11">
-          <el-button>文件库</el-button>
-        </el-col>
+      <el-row style="text-align: center;background: #F5F5F5;height: 70px;padding-top: 20px;">
+        <el-col :span="24">{{friend.username}}</el-col>
       </el-row>
     </el-header>
     <el-main>
@@ -35,7 +32,9 @@
                 <!--message:{&nbsp;boolean:{{msg.from == to}}-->
                 <div style="color:darkgrey;font-size: 15px;text-align: center">{{msg.date}}</div>
                 <!-- {{msg.toUser}}&nbsp;{{user.id}}-->
-                <div class="chatin" v-if="msg.toUser === user.id">
+
+                <div class="chatin" v-if="msg.toUser == user.id">
+
                   <!--https://ss0.bdstatic.com/7Ls0a8Sm1A5BphGlnYG/sys/portrait/item/netdisk.1.5f14a41b.xngdALbPHMrnb9LbPTPmRA.jpg-->
                   <img width="40px" height="40px"
                        :src="friend.imageUrl=== null?defaultImg:friend.imageUrl">
@@ -43,68 +42,69 @@
                         v-html="msg.message.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)"></span>
                   <div v-if="msg.flag === 0">
 
-                    <span v-if="msg.fileItem.name.split('.').length === 2">
-                      <p v-if="doc.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                    <span v-if="msg.fileItem.name.split('.').length >= 2">
+
+                      <p v-if="doc.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Word_24_2f2aefb.png"
                           style="float: left;" width="50px" height="50px"/>{{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="ppt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="ppt.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/PPT_24_79bc280.png"
                           width="50px" height="50px"
                           style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="excel.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="excel.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Excel_24_851dee6.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="pdf.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="pdf.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/PDF_24_694b0da.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="music.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="music.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Music_24_2ac587d.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="vedio.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="vedio.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Video_24_703ade3.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="txt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="txt.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Text_24_7c9f4e9.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="zip.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="zip.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/ZIP_24_7d2970f.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="img.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="img.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Picture_24_7d34de9.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="torrent.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="torrent.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/BT_24_e6ceec7.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="code.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="code.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Code_24_cbd51f7.png"
                           width="50px" height="50px" style="float: left;"/>
@@ -112,8 +112,8 @@
                       </p>
                       <p v-else>
                         <img
-                        src="../../assets/img/fileCategoryImg/Misc_24_af08942.png"
-                        width="50px" height="50px" style="float: left;"/>{{msg.fileItem.name}}
+                          src="../../assets/img/fileCategoryImg/Misc_24_af08942.png"
+                          width="50px" height="50px" style="float: left;"/>{{msg.fileItem.name}}
                       </p>
                     </span>
                     <span v-else-if="msg.fileItem.name.split('.').length === 1">
@@ -137,68 +137,70 @@
                   <span v-if="msg.flag === 1"
                         v-html="msg.message.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)"></span>
                   <span v-if="msg.flag === 0">
-                     <span v-if="msg.fileItem.name.split('.').length === 2">
-                      <p v-if="doc.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+
+                     <span v-if="msg.fileItem.name.split('.').length >= 2">
+
+                      <p v-if="doc.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Word_24_2f2aefb.png"
                           style="float: left;" width="50px" height="50px"/>{{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="ppt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="ppt.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/PPT_24_79bc280.png"
                           width="50px" height="50px"
                           style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="excel.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="excel.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Excel_24_851dee6.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="pdf.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="pdf.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/PDF_24_694b0da.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="music.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="music.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Music_24_2ac587d.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="vedio.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="vedio.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Video_24_703ade3.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="txt.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="txt.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Text_24_7c9f4e9.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="zip.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="zip.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/ZIP_24_7d2970f.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="img.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="img.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Picture_24_7d34de9.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="torrent.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="torrent.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/BT_24_e6ceec7.png"
                           width="50px" height="50px" style="float: left;"/>
                         {{msg.fileItem.name}}
                       </p>
-                      <p v-else-if="code.indexOf(msg.fileItem.name.split('.')[1].toLowerCase()) !== -1">
+                      <p v-else-if="code.indexOf(msg.fileItem.name.substring(msg.fileItem.name.lastIndexOf('.')+1, msg.fileItem.name.length).toLowerCase()) !== -1">
                         <img
                           src="../../assets/img/fileCategoryImg/Code_24_cbd51f7.png"
                           width="50px" height="50px" style="float: left;"/>
@@ -279,6 +281,35 @@
   import BScroll from "better-scroll"
   import fileSharer from './fileSharer'
   import qs from 'qs'
+
+  /**
+   * 时间对象的格式化;
+   */
+  Date.prototype.format = function(format){
+    /*
+    * eg:format="YYYY-MM-dd hh:mm:ss";
+    */
+    var o = {
+      "M+" : this.getMonth()+1, //month
+      "d+" : this.getDate(),   //day
+      "h+" : this.getHours(),  //hour
+      "m+" : this.getMinutes(), //minute
+      "s+" : this.getSeconds(), //second
+      "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+      "S" : this.getMilliseconds() //millisecond
+    }
+
+    if(/(y+)/.test(format)) {
+      format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+
+    for(var k in o) {
+      if(new RegExp("("+ k +")").test(format)) {
+        format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+      }
+    }
+    return format;
+  }
 
   export default {
 
@@ -374,12 +405,13 @@
       },
 
       sendMessage(flag) {
+        var date = new Date();
         this.outMessage = {
           "from": this.user.id,
           "toUser": this.to,
           "message": this.outMessage,
           "flag": flag,
-          "date": new Date()
+          "date": date.format("yyyy-MM-dd hh:mm:ss")
         };
 
         if (this.outMessage.message.replace(/(^\s*)|`(\s*$)/g, "").length !== 0) {
@@ -475,16 +507,17 @@
               "toUser": this.to,
               "fileItem": item,
               "flag": 0,
-              "date": new Date()
+              "date": new Date().format("yyyy-MM-dd hh:mm:ss")
             };
             this.websocketsend(JSON.stringify(this.outMessage));
             this.outMessage = '';
           });
-          console.log(this.outMessage);
+
         }else{
           //保存 save
           var fileItem = this.$store.state.fileItem;
           var parentId = data[0].id;//保存文件父级id
+          this.$message('正在保存中，请稍后。。。');
           axios({
             url: '/api/message/fileShare',
             method: 'post',
@@ -501,12 +534,15 @@
 
           })
             .then((res) => {
-
+              this.$message({
+                message: "保存成功",
+                type: 'success'
+              })
             })
             .catch((err) => {
               console.log(err);
               this.$message({
-                message: "保存失败",
+                message: "保存失败,可能文件已存在。。。",
                 type: 'warning'
               })
             });
@@ -524,39 +560,27 @@
         }
 
       },
-      save(fileItem){
-        console.log(fileItem);
+      updateMsgRead(){
+
         axios({
-          url: '/api/message/fileShare',
+          url: '/api/message/updateMsgRead',
           method: 'post',
           headers:{
             'Content-Type':'application/json;charset=UTF-8',
-            'access_token': VueCookie.get('access_token')
           },
           params:{
             access_token: VueCookie.get('access_token'),
             friendId: this.to,
             uid: this.user.id,
           },
-          data: fileItem,
         })
           .then((res) => {
-            this.loadingFlag = false;
-            this.messages.splice(0);
-            for (let i = 0; i < res.data.length; i++) {
-              this.messages.splice(this.messages.length, 0, res.data[i]);
-            }
-            if (this.isFirst) {
-              this.scrollToBottom();
-              this.isFirst = false;
+            if(!res.data){
+              this.$message("服务器异常")
             }
           })
           .catch((err) => {
-            console.log(err);
-            this.$message({
-              message: "好友消息加载失败",
-              type: 'warning'
-            })
+            this.$message("服务器异常")
           });
       }
     },
@@ -617,6 +641,7 @@
         }, 1000)
       });
 
+      this.updateMsgRead();
     }
   }
 </script>

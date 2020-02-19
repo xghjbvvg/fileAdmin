@@ -4,7 +4,9 @@
       <el-header>
         <userLoginExpire/>
         <el-row>
-          <el-col class="logo" :span="2">雪域</el-col>
+          <el-col class="logo" :span="2">
+            <router-link to="/index">雪域</router-link>
+          </el-col>
           <el-col :span="10" class="settingText">&nbsp;<span style="font-size: 30px">|</span>账户设置</el-col>
           <el-col :offset="3" :span="1">
             <img class="headImg" :src="imageUrl" width="60" height="60">
@@ -12,9 +14,8 @@
           <el-col :span="5" :offset="1" style="font-size: 15px;margin-top: 10px;">
             {{user.username}}
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <router-link to="/feedback">意见反馈</router-link>
-            &nbsp;&nbsp;
-            <router-link to="/contactMe">联系我</router-link>
+            <router-link to="/question">意见反馈</router-link>
+
           </el-col>
         </el-row>
         <el-row>
@@ -67,11 +68,7 @@
               {{user.email}}
             </el-col>
           </el-row>
-          <el-row class="common">
-            <el-col :span="8" :offset="4">
-              <i class="el-icon-document"></i> 账户申诉
-            </el-col>
-          </el-row>
+
           <el-row class="common">
             <el-col :span="8" :offset="4" style="cursor: pointer">
               <i class="el-icon-refresh"></i><span @click="logout">账户注销</span>
@@ -134,7 +131,7 @@
         this.$router.push("/user/login");
       },
       deleteUser() {
-        var confirm = window.confirm("亲，你确定要注销么？");
+        var confirm = window.confirm("亲，你确定要销毁么？");
         if (confirm) {
           const loading = this.$loading({
             lock: true,
@@ -211,7 +208,7 @@
       this.handleEmail();
       // this.user = JSON.parse(sessionStorage.getItem('user'));
       if (this.user.imageUrl === null) {
-        this.imageUrl = 'http://localhost:8763/static/head/img51.gif';
+        this.imageUrl = 'http://120.78.88.169:8763/static/head/img51.gif';
       } else {
         this.imageUrl = this.user.imageUrl;
       }

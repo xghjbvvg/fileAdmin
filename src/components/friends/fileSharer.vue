@@ -64,7 +64,7 @@
                           {{ scope.row.name }}
                         </div>
                         <div v-else>
-                           <span @click="showFileMethod(scope.$index)">
+                           <span>
                             {{ scope.row.name }}
                           </span>
                         </div>
@@ -153,16 +153,14 @@
           .then(msg => {
             //将上传路径
             this.uploadPath = msg.data[0].absolutePath;
-
+            this.tableData = msg.data;
             if (!this.show) {
               for (let i = 0; i < msg.data.length; i++) {
                 if (!msg.data[i].isFolder) {
-                  msg.data.splice(i, 1);
+                  this.tableData .splice(i, 1);
                 }
               }
             }
-
-            this.tableData = msg.data;
           })
           .catch(error => {
             console.log(error);
@@ -188,14 +186,20 @@
               this.tableData = [];
             } else
               if (!this.show) {
+              var temp = [];
+                this.tableData = [].concat(msg.data);
                 for (let i = 0; i < msg.data.length; i++) {
                   if (!msg.data[i].isFolder) {
-                    msg.data.splice(i, 1);
+                     //this.tableData .splice(i, 1);
+                    delete this.tableData[i];
+                    console.log(msg.data.length+":"+this.tableData.length);
                   }
                 }
+
+              }else{
+                this.tableData = msg.data;
               }
-            console.log(msg.data);
-            this.tableData = msg.data;
+
             })
           .catch(error => {
             console.log(error);
@@ -223,21 +227,32 @@
 
       },
       fileShare(){
-
+        let temp = true;
         if(!this.show){
           //保存
           //var fileItem = this.$store.state.fileItem;
-
+          if(this.multipleSelection.length === 0) {
+            this.$message({
+              message: '请勾选一个文件目录',
+              type: 'warning'
+            });
+            temp = false;
+            return;
+          }
           if(this.multipleSelection.length > 1) {
             this.$message({
               message: '只能勾选一个文件目录',
               type: 'warning'
             });
+            temp = false;
             return;
           }
         }
         this.$emit('receive',this.multipleSelection);
-        this.remove();
+        if(temp){
+          this.remove();
+        }
+
       }
     },
     mounted() {
