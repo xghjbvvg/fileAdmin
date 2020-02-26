@@ -24,7 +24,7 @@
     </el-row>
     <el-row>
       <el-col :span="20">
-        <el-button  type="success" @click="saveComment">评论</el-button>
+        <el-button  type="success" round plain @click="saveComment">评论</el-button>
       </el-col>
 
     </el-row>

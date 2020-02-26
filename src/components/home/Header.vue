@@ -5,18 +5,18 @@
       <el-col :span="3" class="head">雪域世界</el-col>
       <el-col :span="12">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" >
-          <el-menu-item index="1" @click="changeIndex('1')">
+          <el-menu-item index="1" >
             <router-link to="/index">
               首页
             </router-link>
           </el-menu-item>
-          <el-menu-item index="2" @click="changeIndex('2')">
+          <el-menu-item index="2" >
             <router-link to="/friends">好友</router-link>
           </el-menu-item>
-          <el-menu-item index="3" @click="changeIndex('3')">
+          <el-menu-item index="3" >
             <router-link to="/dynamic" > 动态圈</router-link>
           </el-menu-item>
-          <el-menu-item index="4" @click="changeIndex('4')">
+          <el-menu-item index="4" >
             <router-link to="/more" > 更多</router-link>
 
             <!--<router-link to="/">动态圈</router-link>-->
@@ -81,7 +81,7 @@
       components:{UserLoginExpire},
       data(){
           return{
-            activeIndex:'',
+            activeIndex:'1',
             username:vueCookie.get('username'),
             unreadMsgCount: 0,
             imageUrl:'',
@@ -102,7 +102,9 @@
         logout() {
           vueCookie.remove('username');
           vueCookie.remove('access_token');
+          sessionStorage.removeItem("user");
           this.$router.push("/user/login");
+
         },
         changeIndex(val){
           sessionStorage.setItem('activeIndex',val);
@@ -110,6 +112,7 @@
 
       },
       mounted(){
+        this.imageUrl = defaultImg;
         axios({
           url:'/api/user/getUser',
           method:'post',
@@ -126,7 +129,6 @@
             }else{
               this.imageUrl = res.data.imageUrl;
             }
-
             sessionStorage.setItem('user',JSON.stringify(res.data));
             axios({
               url:'/api/message/getUnreadMsgCount',
@@ -155,6 +157,7 @@
               type:'warning'
             })
           })
+
       }
     }
 </script>

@@ -114,6 +114,7 @@
         },
         //上传头像之前校验
         beforeAvatarUpload(file) {
+          this.$message('正在上传，请稍后！！！');
           const isJPG = file.type === 'image/jpeg';
           const isLt2M = file.size / 1024 / 1024 < 2;
 

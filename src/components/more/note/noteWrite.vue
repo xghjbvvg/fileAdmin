@@ -95,6 +95,7 @@
                 id:this.user.id
               }
             };
+          this.$message('正在保存中，请稍后！！！');
           let url = '';
           console.log(note);
           if(typeof(this.id) !== "undefined"){

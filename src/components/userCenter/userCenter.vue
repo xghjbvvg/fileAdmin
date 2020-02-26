@@ -183,12 +183,14 @@
               })
                 .then(() => {
                   this.destroySuccess = true;
+                  sessionStorage.removeItem("user");
                 })
                 .catch(() => {
                   this.$message({
-                    message: '亲，销毁用户失败。。。。。',
+                    message: '亲，销毁用户失败,请联系管理员。。。。。',
                     type: 'warning'
-                  })
+                  });
+                  this.destroySuccess = true;
                 })
             })
             .catch(() => {

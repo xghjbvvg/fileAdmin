@@ -49,8 +49,9 @@ const router = new Router({
       path: '/index',
       name: 'index',
       component: index,
+      redirect:'/fileIndex',
       children: [
-        {path: '/index', name: 'fileIndex', component: fileIndex},
+        {path: '/fileIndex', name: 'fileIndex', component: fileIndex},
         {
           path: '/friends',
           name: 'friends',
@@ -136,7 +137,7 @@ const router = new Router({
     {path:'/scoll',name:'scoll',component:scoll},
 
   ],
-  mode: 'history',
+  //mode: 'history',
   base: '/',
   scrollBehavior
 

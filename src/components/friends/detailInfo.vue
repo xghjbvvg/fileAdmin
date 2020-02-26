@@ -1,6 +1,7 @@
 <template>
-  <div id="detailInfo" v-show="flag">
+  <div id="detailInfo" v-if="flag">
     <el-row>
+
       <img :src="friendDetail.friend.imageUrl === null ?defaultImg:friendDetail.friend.imageUrl" width="150px" height="150px">
     </el-row>
     <el-row>
@@ -42,8 +43,9 @@
         <el-button size="small" round @click="deleteFriend"> 删除好友</el-button>
       </el-col>
       <el-col :span="3" >
-        <el-button size="small" round @click="report">举报</el-button>
-
+        <router-link to="/question">
+          <el-button size="small" round @click="report">举报</el-button>
+        </router-link>
       </el-col>
     </el-row>
     <el-row>
@@ -63,7 +65,8 @@
         friendId: this.$route.query.friendId,
         friendDetail:{},
         defaultImg:defaultImg,
-        flag:true
+        flag:true,
+        user: JSON.parse(sessionStorage.getItem("user")),
       }
     },
     methods: {
@@ -73,12 +76,14 @@
           method:'post',
           params:{
             access_token:VueCookie.get('access_token'),
-            friendId:this.friendId
+            friendId:this.friendId,
+            uid: this.user.id,
           },
         })
           .then((res)=>{
+            console.log(res.data);
+            this.flag = true;
             this.friendDetail = res.data;
-
           })
           .catch((err)=>{
             console.log(err);
@@ -181,6 +186,7 @@
       }
     },
     mounted(){
+      this.flag = false;
       this.getDetail();
     }
   }

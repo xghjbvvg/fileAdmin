@@ -208,7 +208,7 @@
               });
 
               axios({
-                url:'/api/email/sendEmail',
+                url:'/api/email/sendNumberByEmail',
                 method:'post',
                 params:{
                   access_token:vueCookie.get('access_token'),

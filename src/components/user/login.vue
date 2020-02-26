@@ -212,10 +212,30 @@
                       "content-type":"application/json;charset=utf-8"
                     }
                   }).then(()=>{
-                    this.loginSuccess = true;
+
                     VueCookie.set("access_token",res.data.access_token,86500);
                     VueCookie.set("username",this.userLogin.username,86500);
-                    router.push("/index");
+
+                    axios({
+                      url:'/api/user/getUser',
+                      method:'post',
+                      params:{
+                        access_token:VueCookie.get('access_token'),
+                        username:this.userLogin.username
+                      },
+                    })
+                      .then((res)=>{
+                        sessionStorage.setItem('user',JSON.stringify(res.data));
+                        this.loginSuccess = true;
+                        router.push("/index");
+                      })
+                      .catch((err)=>{
+                        console.log(err);
+                        this.$message({
+                          message:"用户加载失败",
+                          type:'warning'
+                        })
+                      })
                   }).catch((err)=>{
                     loading.close();
                     this.$message({

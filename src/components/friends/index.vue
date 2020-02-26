@@ -25,8 +25,11 @@
                 </el-row>
                 <el-row v-for="(item,index) in messageSessionList">
                   <el-col :span="6">
-                    <img
+                   <!-- <img
                       :src="item.image_url === null||item.image_url.length === 0 ?defaultImg:item.image_url"
+                      width="60px" height="60px"/>-->
+                    <img
+                      :src="item.imageUrl === null||item.imageUrl.length === 0 ?defaultImg:item.imageUrl"
                       width="60px" height="60px"/>
                   </el-col>
                   <el-col :span="7">
@@ -81,12 +84,9 @@
             </el-tab-pane>
             <el-footer>
               <el-row class="footer">
-                <el-col :span="10">
-                  <el-button type="text" @click="addFriendsOrGroup">创建群组</el-button>
 
-                </el-col>
-                <el-col :span="12">
-                  <el-button type="text" @click="addFriendsOrGroup">添加好友/群组</el-button>
+                <el-col :span="12" :offset="10">
+                  <el-button type="text" @click="addFriendsOrGroup">添加好友</el-button>
                 </el-col>
 
               </el-row>
@@ -149,7 +149,7 @@
         console.log(tab, event);
       },
       addFriendsOrGroup() {
-        this.$prompt('请输入手机号/群组号', '提示', {
+        this.$prompt('请输入手机号', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           inputPattern: /^[0-9]*$/,
@@ -239,7 +239,7 @@
           }
         })
           .then(msg => {
-            this.messageSessionList = msg.data
+            this.messageSessionList = msg.data;
             console.log(this.messageSessionList);
           })
           .catch(error => {

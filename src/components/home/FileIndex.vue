@@ -16,13 +16,16 @@
         <el-row>
           <el-col :span="12">
             <el-button id="browse_button"
-            ><i class="el-icon-upload2"></i>上传文件</el-button
+            ><i class="el-icon-upload2"></i>上传文件
+            </el-button
             >
             <el-button @click="open"
-            ><i class="el-icon-folder"></i>新建文件夹</el-button
+            ><i class="el-icon-folder"></i>新建文件夹
+            </el-button
             >
             <el-button @click="downloadMultipleFile"
-            ><i class="el-icon-download"></i>下载文件</el-button
+            ><i class="el-icon-download"></i>下载文件
+            </el-button
             >
           </el-col>
           <el-col :offset="6" :span="4">
@@ -35,7 +38,7 @@
         </el-row>
         <!--文件路径显示-->
         <el-row class="contentHead">
-          <el-col :span="18"  style=" color:#66b1ff;font-size: 15px;cursor:pointer;">
+          <el-col :span="18" style=" color:#66b1ff;font-size: 15px;cursor:pointer;">
                 <span
 
                   @click="getFileMainMenu"
@@ -101,7 +104,7 @@
                 width="175"
                 show-overflow-tooltip
               >
-                <template slot-scope="scope">{{ scope.row.date }}</template>
+                <template slot-scope="scope">{{formatDate(scope.row.date ) }}</template>
               </el-table-column>
               <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
@@ -129,9 +132,8 @@
         </el-row>
 
 
-
         <el-container v-if="downloadFlag">
-          <Download class="download" />
+          <Download class="download"/>
         </el-container>
         <!--文件预览-->
         <el-container v-show="showFile">
@@ -179,7 +181,7 @@
                     v-if="scope.row.status === 2"
                     :text-inside="true"
                     :stroke-width="20"
-                    :percentage="scope.row.percent"
+                    :percentage="percent"
                   ></el-progress>
                 </template>
               </el-table-column>
@@ -192,24 +194,26 @@
                 </template>
               </el-table-column>
             </el-table>
-            <br />
+            <br/>
 
             <el-button
               :disabled="false"
               type="danger"
               @click="uploadStart()"
-            >开始上传</el-button
+            >开始上传
+            </el-button
             >
             <el-button
               :disabled="!uploading"
               type="warring"
               @click="uploadStop()"
-            >暂停上传</el-button
+            >暂停上传
+            </el-button
             >
           </el-main>
         </el-container>
 
-        <el-container id="drag"  class="simpleUpload" v-drag v-if="flag && !uploadStyle">
+        <el-container id="drag" class="simpleUpload" v-drag v-if="flag && !uploadStyle">
           <el-header class="upload-header">
             <el-col :span="3">上传</el-col>
             <el-col :span="1" :offset="19">
@@ -223,7 +227,7 @@
             </el-col>
           </el-header>
           <el-main style="margin-top: -40px">
-            <el-row> 总共{{ files.length }}文件 </el-row>
+            <el-row> 总共{{ files.length }}文件</el-row>
           </el-main>
         </el-container>
       </div>
@@ -245,8 +249,8 @@
   import SWF from "../../models/dfa.js";
   import VueCookie from "vue-cookies";
   import FileShower from "./FileShower";
-  var fs = require("fs");
 
+  var fs = require("fs");
 
 
   export default {
@@ -262,21 +266,21 @@
       Download
     },
     // 自定义指令
-    directives:{
-      drag:function(el){
-        el.onmousedown = function(e){
+    directives: {
+      drag: function (el) {
+        el.onmousedown = function (e) {
           //获取鼠标点击处分别与div左边和上边的距离：鼠标位置-div位置
           var divx = e.clientX - document.getElementById('drag').offsetLeft;
           var divy = e.clientY - document.getElementById('drag').offsetTop;
           //包含在onmousedown里，表示点击后才移动，为防止鼠标移出div，使用document.onmousemove
-          document.onmousemove = function(e){
+          document.onmousemove = function (e) {
             //获取移动后div的位置：鼠标位置-divx/divy
             var l = e.clientX - divx;
             var t = e.clientY - divy;
-            document.getElementById('drag').style.left=l+'px';
-            document.getElementById('drag').style.top=t+'px';
+            document.getElementById('drag').style.left = l + 'px';
+            document.getElementById('drag').style.top = t + 'px';
           }
-          document.onmouseup = function(e){
+          document.onmouseup = function (e) {
             document.onmousemove = null;
             document.onmouseup = null;
           }
@@ -285,17 +289,12 @@
     },
     data() {
       return {
-        showFile:false,
+        showFile: false,
         username: VueCookie.get("username"),
         user: JSON.parse(sessionStorage.getItem("user")),
         input: "",
         count: 0,
         tableData: [
-          {
-            name: "hcx",
-            size: "12kb",
-            date: "2102-8-9"
-          }
         ],
         multipleSelection: [],
         currentPath: [],
@@ -312,7 +311,7 @@
         //http://127.0.0.1:8081
         server_config: "/api/file/fileUpload",
         uploadPath: "",
-        rootPath:"",
+        rootPath: "",
         up: {},
         files: [],
         // tableData: [],
@@ -322,8 +321,10 @@
         //控制是否可以重复上传
         duplicates: false,
         //图片文件路径
-        path:'',
-        filterWord:[]
+        path: '',
+        filterWord: [],
+        percent:0,
+        uploadFilePath:new Map(),
       };
     },
     computed: {
@@ -335,17 +336,16 @@
       files: {
         handler() {
           // this.tableData = [];
-          this.files.forEach(e => {
+          /*this.files.forEach(e => {
             //console.log(e);
             this.tableData.push({
               name: e.name,
               size: e.size,
               status: e.status,
-              id: e.id,
-              percent: e.percent
+              id: e.id
             });
           });
-          this.tableData = this.unique(this.tableData);
+          this.tableData = this.unique(this.tableData);*/
           // if(!this.fileIsExist){
           //   this.uploadStart();
           // }
@@ -354,6 +354,18 @@
       }
     },
     methods: {
+      //格式化时间
+      formatDate(date){
+        var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate()-1,
+          year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+      },
       /*文件显示操作*/
       toggleSelection(rows) {
         if (rows) {
@@ -390,7 +402,7 @@
               access_token: VueCookie.get("access_token"),
               id: this.tableData[index].id,
               path: this.tableData[index].path,
-              uid:this.user.id
+              uid: this.user.id
             }
           })
             .then(msg => {
@@ -417,7 +429,7 @@
             params: {
               access_token: VueCookie.get("access_token"),
               path: this.data.path,
-              uid:this.user.id
+              uid: this.user.id
             }
           })
             .then(msg => {
@@ -432,7 +444,6 @@
             });
         }
       },
-
 
 
       //下载文件，引用download方法
@@ -462,7 +473,7 @@
           }
         })
           .then(res => {
-           // console.log(res);
+            // console.log(res);
             //木有数据则返回
             if (!res) {
               return;
@@ -496,10 +507,10 @@
           if (!data.isFolder) {
             // let path = data.absolutePath;
             this.downloadFile(index);
-          }else{
+          } else {
             this.$message({
-              type:'warning',
-              message:'亲，不支持下载文件夹哦'
+              type: 'warning',
+              message: '亲，不支持下载文件夹哦'
             })
           }
         });
@@ -517,7 +528,15 @@
       //  查找根目录文件
       getFileMainMenu() {
         this.currentPath = [];
+        var i = 0;
 
+        while(sessionStorage.getItem('user') === null){
+          i++;
+          if (i > 10000){
+            break;
+          }
+          console.log(sessionStorage.getItem('user') === null);
+        }
         axios({
           url: "/api/file/getMainMenu",
           method: "get",
@@ -572,8 +591,8 @@
           });
       },
       //根据文件路径获取文件
-      pathSkip(path,index){
-        this.currentPath.splice(index+1);
+      pathSkip(path, index) {
+        this.currentPath.splice(index + 1);
         this.uploadPath = path;
         this.getTableDataByPath(path);
       },
@@ -582,7 +601,6 @@
         tableData.forEach(data => {
           data.download = 0;
           data.downloading = 0;
-          data.percent = 0;
         });
       },
 
@@ -596,7 +614,7 @@
           inputPattern: /$/,
           inputErrorMessage: "文件名为空"
         })
-          .then(({ value }) => {
+          .then(({value}) => {
 
 
             //判断文件是否重名
@@ -604,7 +622,7 @@
             let len = this.tableData.length;
             let regEn = /[`~!@#$%^&()_+<>?:.*"{}\/;'[\]]/im;
             let regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
-            if(regEn.test(value) || regCn.test(value)) {
+            if (regEn.test(value) || regCn.test(value)) {
               this.$message({
                 type: "warning",
                 message: "文件含有特殊字符"
@@ -622,7 +640,7 @@
                 return;
               }
             }
-
+            this.$message("正在创建，请稍后！！！");
             //文件不重名时执行
             if (flag) {
               axios({
@@ -631,8 +649,8 @@
                 params: {
                   access_token: VueCookie.get("access_token"),
                   path: this.uploadPath,
-                  fileFolderName:  value,
-                  uid:this.user.id
+                  fileFolderName: value,
+                  uid: this.user.id
                 }
               })
                 .then(msg => {
@@ -641,9 +659,9 @@
                     message: value + "文件夹创建成功 "
                   });
 
-                  if(this.uploadPath == this.rootPath){
+                  if (this.uploadPath == this.rootPath) {
                     this.getFileMainMenu();
-                  }else{
+                  } else {
                     this.getTableDataByPath(this.uploadPath);
                   }
 
@@ -697,6 +715,7 @@
             //从大到小
             this.sort("/api/file/sortFileBySizeDown");
             this.sizeFlag = true;
+
             //console.log(this.tableData);
           }
         } else {
@@ -756,13 +775,18 @@
 
       /*文件上传操作,上传参数设置*/
       beforeUpload(up, file) {
-        //alert(this.uploadPath);
+
+        var temp = this.uploadFilePath.get(file.md5);
+        console.log(temp);
+        if(typeof(temp) === 'undefined'){
+          this.uploadFilePath.set(file.md5,this.uploadPath);
+        }
         up.setOption("multipart_params", {
           uid: this.user.id,
           size: file.size,
           md5: file.md5,
-          uploadPath: this.uploadPath,
-          access_token:VueCookie.get('access_token')
+          uploadPath: this.uploadFilePath.get(file.md5),
+          access_token: VueCookie.get('access_token')
         });
       },
       //去除重复数据
@@ -780,11 +804,11 @@
         return hash;
       },
 
-      filesAdded: function(up, files) {
+      filesAdded: function (up, files) {
 
         console.log("有新文件添加至队列");
         this.flag = true;
-        files.forEach((f,index) => {
+        files.forEach((f, index) => {
           f.status = -1;
           FileMd5(f.getNative(), (e, md5) => {
 
@@ -797,21 +821,21 @@
               params: {
                 access_token: VueCookie.get("access_token"),
                 md5: f.md5,
-                uid:this.user.id
+                uid: this.user.id
               },
-              header: { "content-type": "application/json;charset=utf-8" }
+              header: {"content-type": "application/json;charset=utf-8"}
             })
               .then(msg => {
                 this.fileIsExist = !msg.data;
 
                 if (this.fileIsExist) {
                   this.$message({
-                    message: '亲，'+f.name+'文件已经上传过了。。。。',
-                    type:  'warning'
+                    message: '亲，' + f.name + '文件已经上传过了。。。。',
+                    type: 'warning'
                   });
                   f.status = 5;
 
-                }else{
+                } else {
                   files.forEach(f => {
                     this.files.push(f);
 
@@ -845,15 +869,24 @@
       error(uploader, errObject) {
         //同一文件可以重复上传
         this.duplicates = true;
+        this.getTableDataByPath(this.uploadPath);
         console.log(errObject.message);
         this.$message({
-          type:'warn',
-          message:'含有违法信息或服务器异常，请联系管理员'
-        })
+          type: 'warn',
+          message: '含有违法信息或服务器异常，请联系管理员'
+        });
+
       },
       uploadStop() {
         this.uploading = false;
         this.up.stop();
+      },
+      fileUploaded() {
+        this.getTableDataByPath(this.uploadPath);
+      },
+      uploadProgress(uploader,file){
+        console.log(file.percent);
+        this.percent = file.percent;
       },
       //初始化pluploader
       initPlUploader() {
@@ -872,7 +905,8 @@
             /* UploadProgress: this.uploadProgress,
                FileUploaded: this.fileUploaded,*/
             Error: this.error,
-            //FileUploaded:this.fileUploaded,
+            FileUploaded: this.fileUploaded,
+            UploadProgress:this.uploadProgress,
             //ChunkUploaded:this.chunkUploaded
           }
         });
@@ -880,17 +914,19 @@
       },
 
       //文件预览，路径传递
-      showFileMethod(index){
+      showFileMethod(index) {
         this.path = this.tableData[index].url;
         //alert(this.path);
         this.showFile = true;
       },
 
     },
-    mounted: function() {
+    mounted: function () {
+
       //初始化文件上传
       this.initPlUploader();
       this.getFileMainMenu();
+
     }
   };
 </script>
@@ -941,6 +977,7 @@
     top: 200px;
     right: 20px;
     z-index: 999;
+
   }
 
   .simpleUpload {
@@ -966,7 +1003,9 @@
 
   .upload-content {
     margin-top: -43px;
+
   }
+
 
   .download {
     /*width: 500px;*/

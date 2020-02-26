@@ -17,7 +17,7 @@
           <el-col :span="6">
             <router-link to="/dynamic/user">个人动态</router-link>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             获赞数:{{starCount}}
           </el-col>
         </el-row>

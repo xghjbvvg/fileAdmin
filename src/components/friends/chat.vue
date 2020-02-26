@@ -421,7 +421,7 @@
       },
 
       initWebSocket() { //初始化weosocket
-        const wsuri = "ws://127.0.0.1:8763/websocket/" + this.user.id;
+        const wsuri = "ws://120.78.88.169:8763/websocket/" + this.user.id;
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;
@@ -445,7 +445,7 @@
         console.log(this.messages);
       },
       websocketsend(Data) {//数据发送
-        console.log(Data);
+        debugger;
         this.outMessage = JSON.parse(Data);
         this.messages.splice(this.messages.length, 0, this.outMessage);
         this.websock.send(Data);
@@ -537,6 +537,10 @@
               this.$message({
                 message: "保存成功",
                 type: 'success'
+              })
+              this.$message({
+                type: 'warning',
+                message:"注意，文件夹只会保存子文件，当前目录不保存"
               })
             })
             .catch((err) => {

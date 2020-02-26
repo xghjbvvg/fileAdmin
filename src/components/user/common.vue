@@ -44,10 +44,10 @@
 </template>
 
 <script>
-  var url1 = require("../../assets/img/bg1.jpg")
-  var url2 = require("../../assets/img/bg2.jpg");
-  var url3 = require("../../assets/img/bg3.jpg");
-  var url4 = require("../../assets/img/bg4.jpg");
+  import url1 from '../../assets/img/bg1.jpg';
+  import url2 from '../../assets/img/bg2.jpg';
+  import url3 from '../../assets/img/bg3.jpg';
+  import url4 from '../../assets/img/bg4.jpg';
     export default {
       name: "common",
       data() {

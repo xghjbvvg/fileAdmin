@@ -77,31 +77,45 @@
         router.push({path: '/more/noteWrite', query: {id: this.events[index].id}});
       },
       deleteItem(index) {
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          axios({
+            url: '/api/more/note/delete',
+            method: 'post',
+            params: {
+              access_token: vueCookie.get('access_token'),
+              id:this.events[index].id
+            },
+          }).then((res)=>{
+            if(res.data){
+              this.$message({
+                type:'success',
+                message:'删除成功'
+              });
+              this.events.splice(index,1);
+            }else{
+              this.$message({
+                type:'warning',
+                message:'删除错误'
+              })
+            }
+          }).catch((err)=>{
+            console.log(err);
 
-        axios({
-          url: '/api/more/note/delete',
-          method: 'post',
-          params: {
-            access_token: vueCookie.get('access_token'),
-            id:this.events[index].id
-          },
-        }).then((res)=>{
-          if(res.data){
-            this.$message({
-              type:'success',
-              message:'删除成功'
-            });
-            this.events.splice(index,1);
-          }else{
-            this.$message({
-              type:'warning',
-              message:'删除错误'
-            })
-          }
-        }).catch((err)=>{
-          console.log(err);
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
 
-        })
+
+
+
       },
       getAll(date){
         axios({
