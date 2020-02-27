@@ -91,9 +91,9 @@
           fromEmail:this.email,
           flag:1
         };
-
+        this.$message("正在保存，请稍后！！！");
         axios({
-          url: '/api/admin/saveQuestion',
+          url: '/api/more/email/saveQuestion',
           method: 'post',
           data:question,
           params: {

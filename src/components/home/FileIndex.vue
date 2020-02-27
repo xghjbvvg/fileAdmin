@@ -999,6 +999,7 @@
     font-size: 15px;
     color: grey;
     margin-top: 10px;
+
   }
 
   .upload-content {

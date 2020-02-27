@@ -31,21 +31,15 @@
         <span class="el-dropdown-link">
           {{username}}<i class="el-icon-caret-bottom el-icon--right"></i>
         </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item class="clearfix first">
-              <img src="../../assets/img/userImg.gif" width="50" height="50">
-              <span style="color: #f0c78a;font-size: 25px">
-                {{username}}
-              </span>
-            </el-dropdown-item>
+          <el-dropdown-menu slot="dropdown" style="width: 150px;height: 150px;">
             <el-dropdown-item class="clearfix">
               <router-link to="/userCenter">个人资料</router-link>
             </el-dropdown-item>
-            <el-dropdown-item class="clearfix">
-              <span @click="open">联系我</span>
+            <el-dropdown-item class="clearfix" @click="open">
+              <span >联系我</span>
             </el-dropdown-item>
-            <el-dropdown-item class="clearfix">
-              <span @click="logout">注销</span>
+            <el-dropdown-item class="clearfix" @click="logout">
+              <span >注销</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -89,6 +83,13 @@
           }
       },
       methods:{
+        handleUsername(name) {
+          if(name.length > 15){
+            var s = name.substring(0, 2);
+            var s1 = name.substring(name.length -4, name.length -1);
+            return s + "******" + s1;
+          }
+        },
         open(){
           this.$alert('QQ:3144933378<br/>' +
             '微信:18270671294<br/>' +
@@ -124,7 +125,7 @@
           .then((res)=>{
             //console.log(res.data);
             this.$store.commit('setUserInfo',res.data);
-            if(res.data.imageUrl === null){
+            if(res.data.imageUrl === null || res.data.imageUrl.length === 0){
               this.imageUrl = defaultImg;
             }else{
               this.imageUrl = res.data.imageUrl;

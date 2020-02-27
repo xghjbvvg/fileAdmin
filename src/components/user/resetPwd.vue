@@ -77,7 +77,7 @@
     methods: {
       updatePwd() {
         if(this.checkNum){
-
+          this.$message("正在修改，请稍后！！！");
           axios({
             url:'/api/user/updatePassByEmail',
             method: 'get',///11138
